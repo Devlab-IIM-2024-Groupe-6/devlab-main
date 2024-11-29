@@ -12,6 +12,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.3",
         "easycorp/easyadmin-bundle": "^4.14",
+        "picqer/php-barcode-generator": "^2.4",
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
         "symfony/console": "6.4.*",

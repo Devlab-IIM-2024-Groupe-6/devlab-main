@@ -1,28 +1,32 @@
-/* timeline.css */
+/* Section principale */
 .timeline {
     display: flex;
     justify-content: center;
+    align-items: center;
     position: relative;
     margin: 200px 0;
 }
 
+/* Ligne centrale */
 .timeline:before {
     content: '';
     position: absolute;
-    width: 90vw;
-    height: 6px;
-    background-color: #ccc;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, #0A3C74, #007BFF); /* Dégradé horizontal bleu foncé à bleu clair */
     top: 50%;
     z-index: 1;
 }
 
+/* Élément de la timeline */
 .timeline-item {
     position: relative;
-    flex: 1;
+    flex: 1 1 200px;
     text-align: center;
-   
+    margin: 10px;
 }
 
+/* Position des contenus au-dessus et en dessous */
 .timeline-item[data-position="above"] .timeline-content {
     position: relative;
     top: -100px;
@@ -30,30 +34,73 @@
 
 .timeline-item[data-position="below"] .timeline-content {
     position: relative;
-    top: 120px;
+    top: 100px;
 }
 
+/* Contenu stylisé */
 .timeline-content {
     display: inline-block;
     background: #fff;
+    border: 1px solid #ccc; /* Bordure légère grise */
     padding: 10px 20px;
-    border-radius: 10px;
+    border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 2;
     position: relative;
-    border: 2px solid black;
+    font-size: 14px;
+    color: #0A3C74; /* Texte bleu foncé */
 }
 
+/* Point sur la timeline */
 .timeline-item:after {
     content: '';
     position: absolute;
-    width: 36px;
-    height: 36px;
-    background: #007bff;
+    width: 14px;
+    height: 14px;
+    background: #0A3C74; /* Bleu foncé pour le cercle */
     border-radius: 50%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 3;
-    border: 2px solid #fff;
+    border: 2px solid #fff; /* Contour blanc autour des points */
+}
+
+/* --- Responsivité (seulement pour petits écrans) --- */
+
+/* Petits écrans : affichage vertical */
+@media (max-width: 768px) {
+    .timeline {
+        flex-direction: column;
+    }
+
+    .timeline:before {
+        /* Ligne verticale sur mobile */
+        height: 100%;
+        width: 2px;
+        background: linear-gradient(to bottom, #0A3C74, #007BFF); /* Dégradé bleu vertical */
+        left: 50%;
+        top: 0;
+    }
+
+    .timeline-item {
+        /* Centrer les éléments sur mobile */
+        flex: 1 1 auto;
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    .timeline-item[data-position="above"] .timeline-content,
+    .timeline-item[data-position="below"] .timeline-content {
+        /* Contenus centrés horizontalement */
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Les points restent centrés */
+    .timeline-item:after {
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 }

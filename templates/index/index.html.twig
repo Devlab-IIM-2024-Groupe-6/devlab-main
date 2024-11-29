@@ -10,13 +10,11 @@
         <p class="lead">Aidez les personnes dans le besoin en donnant une seconde vie à vos appareils.</p>
     </header>
 
-    <!-- Carte des points de dépôt -->
+        <!-- Carte des points de dépôt -->
     <section class="mb-5">
         <h2 class="text-primary">Trouver un point de dépôt</h2>
         <p>Sélectionnez un site proche de chez vous :</p>
-        <div id="map" class="border rounded" style="height: 400px; background-color: #e9ecef;">
-            <p class="text-center pt-5">Carte en cours d'intégration...</p>
-        </div>
+        <div id="map" class="border rounded" style="height: 500px; background-color: #e9ecef;"></div>
     </section>
 
     <!-- Formulaire de dépôt -->
@@ -109,4 +107,53 @@
         </div>
     </section>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- Script Bing Maps -->
+    <script src="https://www.bing.com/api/maps/mapcontrol?callback=initMap" async defer></script>
+    <script>
+        let map;
+
+        // Fonction pour initialiser la carte
+        function initMap() {
+            map = new Microsoft.Maps.Map('#map', {
+                credentials: 'AptZrQ6EyTPTvtnG8P3Hmfcmg_uBwhxKOqArcahqPrmwrT3PS_nrZTMn33Ehnw4R', // Remplacez par votre clé Bing Maps
+                center: new Microsoft.Maps.Location(48.8566, 2.3522), // Coordonnées par défaut (Paris)
+                zoom: 10
+            });
+
+            loadPoints();
+        }
+
+        // Fonction pour charger les points de dépôt depuis l'API Symfony
+        function loadPoints() {
+            fetch('/api/locations')
+                .then(response => response.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        data.forEach(location => {
+                            const point = new Microsoft.Maps.Location(location.latitude, location.longitude);
+                            const pin = new Microsoft.Maps.Pushpin(point, {
+                                title: location.title,
+                                color: 'blue'
+                            });
+
+                            // Ajout d'un événement de clic sur le pin
+                            Microsoft.Maps.Events.addHandler(pin, 'click', () => {
+                                // Redirige vers la route Symfony 'map', en passant l'ID du point de dépôt
+                                window.location.href = `/map/${location.id}`;
+                            });
+
+                            // Ajout du pin sur la carte
+                            map.entities.push(pin);
+                        });
+                    } else {
+                        console.error('La réponse n\'est pas un tableau :', data);
+                    }
+                })
+                .catch(error => console.error('Erreur lors du chargement des emplacements :', error));
+        }
+    </script>
 {% endblock %}

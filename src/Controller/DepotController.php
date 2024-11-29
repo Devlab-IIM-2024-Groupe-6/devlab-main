@@ -2,33 +2,55 @@
 
 namespace App\Controller;
 
+use App\Entity\Deposit;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use App\Form\DepotType;
 
 class DepotController extends AbstractController
 {
     #[Route('/depot', name: 'depot_form')]
-    // #[IsGranted('ROLE_USER')] // Restriction : l'utilisateur doit être connecté
     public function depot(Request $request): Response
     {
         $form = $this->createForm(DepotType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Logique pour traiter les données du formulaire
             $data = $form->getData();
-            // Simule un enregistrement ou un traitement ici.
             $this->addFlash('success', 'Votre dépôt a été enregistré avec succès.');
-
-            return $this->redirectToRoute('index'); // Redirection après succès
+            return $this->redirectToRoute('index');
         }
 
         return $this->render('depot/form.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/api/locations', name: 'api_locations', methods: ['GET'])]
+    public function getLocations(EntityManagerInterface $entityManager): JsonResponse
+    {
+        $deposits = $entityManager->getRepository(Deposit::class)->findAll();
+
+        $locations = [];
+        foreach ($deposits as $deposit) {
+            $locations[] = [
+                'id' => $deposit->getId(),
+                'latitude' => $deposit->getLatitude(),
+                'longitude' => $deposit->getLongitude(),
+                'title' => $deposit->getName(),
+            ];
+        }
+
+        return new JsonResponse($locations);
+    }
+
+    #[Route('/map/{id}', name: 'map', methods: ['GET'])]
+    public function map(int $id): Response
+    {
+        return $this->render('map.html.twig', [
+            'id' => $id,
         ]);
     }
 }

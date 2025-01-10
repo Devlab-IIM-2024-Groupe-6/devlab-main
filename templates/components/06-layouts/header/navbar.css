@@ -1,3 +1,9 @@
+.navbar {
+    background-color: white;
+    width: 100vw;
+    margin-bottom: 150px;
+}
+
 .links-list {
     gap: 40px;
     font-size: 18px;

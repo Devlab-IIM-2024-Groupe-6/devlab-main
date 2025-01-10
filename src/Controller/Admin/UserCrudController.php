@@ -48,6 +48,7 @@ class UserCrudController extends AbstractCrudController
             TextField::new('Email')->setRequired(true),
             TextField::new('password'),
             $rolesField,
+            TextField::new('tracking_number')->hideOnForm(),
         ];
     }
 

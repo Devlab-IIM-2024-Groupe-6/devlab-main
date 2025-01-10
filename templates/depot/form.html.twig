@@ -1,31 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Déposer un matériel{% endblock %}
+{% block title %}Déposer un matériel
+{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h1>Déposer un matériel</h1>
+	<div
+		class="container mx-auto my-10 px-6 lg:px-20">
+		<!-- Header -->
+		<header class="mb-8">
+			<h1 class="text-4xl font-bold text-primary">Déposer un matériel</h1>
+		</header>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
+		<!-- Flash Messages -->
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success shadow-lg mb-4">
+				{{ message }}
+			</div>
+		{% endfor %}
+{#! A=Ajouter le formulaire comme pour le user dans easy admin #}
+		<!-- Formulaire -->
+		<section class="bg-base-100 shadow-md rounded-lg p-6">
+			{{ form_start(form) }}
+			<div class="form-control mb-4">
+				{{ form_label(form.item_name, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
+				{{ form_widget(form.item_name, {'attr': {'class': 'input input-bordered w-full'}}) }}
+				<div class="text-error text-sm">
+					{{ form_errors(form.item_name) }}
+				</div>
+			</div>
 
-    {{ form_start(form) }}
-        <div class="mb-3">
-            {{ form_label(form.item_name) }}
-            {{ form_widget(form.item_name, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.item_name) }}
-        </div>
+			<div class="form-control mb-4">
+				{{ form_label(form.item_description, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
+				{{ form_widget(form.item_description, {'attr': {'class': 'textarea textarea-bordered w-full'}}) }}
+				<div class="text-error text-sm">
+					{{ form_errors(form.item_description) }}
+				</div>
+			</div>
 
-        <div class="mb-3">
-            {{ form_label(form.item_description) }}
-            {{ form_widget(form.item_description, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.item_description) }}
-        </div>
-
-        {{ form_widget(form.submit, {'attr': {'class': 'btn btn-success'}}) }}
-    {{ form_end(form) }}
-</div>
+			<div class="form-control mt-6">
+				{{ form_widget(form.submit, {'attr': {'class': 'btn btn-success w-full'}}) }}
+			</div>
+			{{ form_end(form) }}
+		</section>
+	</div>
 {% endblock %}

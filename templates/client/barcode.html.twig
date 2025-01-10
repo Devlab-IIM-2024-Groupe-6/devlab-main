@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Code-barre du client
+{% endblock %}
+
+{% block body %}
+<div class="m-4">
+    <h1>Code-barres pour {{ client.firstname }} {{ client.lastname }}</h1>
+    <div>Point de dépôt : {{ deposit.name }}</div>
+    <p>Numéro de suivi : {{ trackingNumber }}</p>
+    <img src="data:image/png;base64,{{ barcode }}" alt="Code-barres pour {{ trackingNumber }}">
+</div>
+{% endblock %}

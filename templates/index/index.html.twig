@@ -3,110 +3,130 @@
 {% block title %}Accueil - Dépôt de matériel{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
+<div class="container mx-auto my-10 px-6 lg:px-20">
     <!-- Header -->
-    <header class="text-center mb-4">
-        <h1 class="display-4 text-success">Bienvenue sur la plateforme de dépôt de matériel informatique</h1>
-        <p class="lead">Aidez les personnes dans le besoin en donnant une seconde vie à vos appareils.</p>
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-success">Bienvenue sur la plateforme de dépôt de matériel informatique</h1>
+        <p class="text-lg text-gray-700 mt-4">Aidez les personnes dans le besoin en donnant une seconde vie à vos appareils.</p>
     </header>
 
-    <!-- Carte des points de dépôt -->
-    <section class="mb-5">
-        <h2 class="text-primary">Trouver un point de dépôt</h2>
-        <p>Sélectionnez un site proche de chez vous :</p>
-        <div id="map" class="border rounded" style="height: 400px; background-color: #e9ecef;">
-            <p class="text-center pt-5">Carte en cours d'intégration...</p>
+    <section class="mb-10">
+        <h2 class="text-2xl font-semibold text-primary mb-4">Trouver un point de dépôt</h2>
+        <p class="text-gray-600 mb-4">Sélectionnez un site proche de chez vous :</p>
+        <div id="map" class="rounded-lg bg-gray-200 border border-gray-300 h-96 flex items-center justify-center">
         </div>
     </section>
 
-    <!-- Formulaire de dépôt -->
-    <div class="mb-5">
-    <h2>Recherchez un point de dépôt à proximité</h2>
-        <form action="#" method="post">
-            <div class="form-group">
-                <label for="search">Entrez votre adresse, code postal ou ville :</label>
-                <input type="text" id="search" name="search" class="form-control" placeholder="Ex : 92100 Boulogne-Billancourt">
+    <!-- Formulaire de recherche -->
+    <section class="mb-10">
+        <h2 class="text-2xl font-semibold text-primary mb-4">Recherchez un point de dépôt à proximité</h2>
+        <form action="#" method="post" class="space-y-4">
+            <div class="form-control">
+                <label for="search" class="label">
+                    <span class="label-text">Entrez votre adresse, code postal ou ville :</span>
+                </label>
+                <input type="text" id="search" name="search" class="input input-bordered w-full" placeholder="Ex : 92100 Boulogne-Billancourt">
             </div>
-            <button type="submit" class="btn btn-primary btn-block mt-3">Rechercher</button>
+            <button type="submit" class="btn btn-primary w-full">Rechercher</button>
         </form>
-    </div>
-
+    </section>
 
     <!-- FAQ -->
-    <section class="mb-5">
-    <h2 class="text-primary">FAQ</h2>
-        <div class="accordion" id="faqAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="faq1">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                        Comment fonctionne le dépôt ?
-                    </button>
-                </h2>
-                <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Vous sélectionnez un point de dépôt, remplissez le formulaire, puis obtenez un bon d'envoi pour déposer votre matériel. Notre équipe s'assure que le matériel est correctement pris en charge.
-                    </div>
-                </div>
+    <section class="mb-10">
+        <h2 class="text-2xl font-semibold text-primary mb-4">FAQ</h2>
+        <div class="collapse collapse-arrow border border-gray-300 rounded-box">
+            <input type="checkbox" id="faq1" />
+            <div class="collapse-title text-lg font-medium">Comment fonctionne le dépôt ?</div>
+            <div class="collapse-content">
+                <p>Vous sélectionnez un point de dépôt, remplissez le formulaire, puis obtenez un bon d'envoi pour déposer votre matériel. Notre équipe s'assure que le matériel est correctement pris en charge.</p>
             </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="faq2">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
-                        Quel type de matériel puis-je déposer ?
-                    </button>
-                </h2>
-                <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Vous pouvez déposer tout matériel informatique : ordinateurs, tablettes, périphériques (claviers, souris), imprimantes, câbles, disques durs, etc. Les appareils doivent être en état de fonctionnement ou réparables.
-                    </div>
-                </div>
+        </div>
+        <div class="collapse collapse-arrow border border-gray-300 rounded-box mt-4">
+            <input type="checkbox" id="faq2" />
+            <div class="collapse-title text-lg font-medium">Quel type de matériel puis-je déposer ?</div>
+            <div class="collapse-content">
+                <p>Vous pouvez déposer tout matériel informatique : ordinateurs, tablettes, périphériques (claviers, souris), imprimantes, câbles, disques durs, etc. Les appareils doivent être en état de fonctionnement ou réparables.</p>
             </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="faq3">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
-                        Que devient mon matériel après le dépôt ?
-                    </button>
-                </h2>
-                <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Votre matériel est inspecté, réparé si nécessaire, puis reconditionné ou recyclé selon son état. Les appareils reconditionnés sont redistribués à ceux qui en ont besoin, et les composants recyclés servent à fabriquer de nouveaux produits.
-                    </div>
-                </div>
+        </div>
+        <div class="collapse collapse-arrow border border-gray-300 rounded-box mt-4">
+            <input type="checkbox" id="faq3" />
+            <div class="collapse-title text-lg font-medium">Que devient mon matériel après le dépôt ?</div>
+            <div class="collapse-content">
+                <p>Votre matériel est inspecté, réparé si nécessaire, puis reconditionné ou recyclé selon son état. Les appareils reconditionnés sont redistribués à ceux qui en ont besoin, et les composants recyclés servent à fabriquer de nouveaux produits.</p>
             </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="faq4">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
-                        Puis-je obtenir un reçu pour mon dépôt ?
-                    </button>
-                </h2>
-                <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Oui, une fois le dépôt validé, vous recevrez un reçu électronique confirmant la prise en charge de votre matériel.
-                    </div>
-                </div>
+        </div>
+        <div class="collapse collapse-arrow border border-gray-300 rounded-box mt-4">
+            <input type="checkbox" id="faq4" />
+            <div class="collapse-title text-lg font-medium">Puis-je obtenir un reçu pour mon dépôt ?</div>
+            <div class="collapse-content">
+                <p>Oui, une fois le dépôt validé, vous recevrez un reçu électronique confirmant la prise en charge de votre matériel.</p>
             </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="faq5">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
-                        Que faire si je ne trouve pas de point de dépôt près de chez moi ?
-                    </button>
-                </h2>
-                <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="faq5" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Si aucun point de dépôt n'est disponible près de chez vous, vous pouvez utiliser notre service d'envoi postal. Remplissez le formulaire pour recevoir un bon d'envoi gratuit.
-                    </div>
-                </div>
+        </div>
+        <div class="collapse collapse-arrow border border-gray-300 rounded-box mt-4">
+            <input type="checkbox" id="faq5" />
+            <div class="collapse-title text-lg font-medium">Que faire si je ne trouve pas de point de dépôt près de chez moi ?</div>
+            <div class="collapse-content">
+                <p>Si aucun point de dépôt n'est disponible près de chez vous, vous pouvez utiliser notre service d'envoi postal. Remplissez le formulaire pour recevoir un bon d'envoi gratuit.</p>
             </div>
         </div>
     </section>
 
-
     <!-- Liens vers d'autres pages -->
-    <section class="mb-5">
-        <h2 class="text-primary">Ressources utiles</h2>
-        <div class="d-flex flex-column gap-3">
-            <a href="{{ path('tracking') }}" class="btn btn-outline-success">Suivi de mon dépôt</a>
-            <a href="{{ path('wiki') }}" class="btn btn-outline-primary">Wiki des problèmes récurrents</a>
+    <section class="mb-10">
+        <h2 class="text-2xl font-semibold text-primary mb-4">Ressources utiles</h2>
+        <div class="flex flex-col gap-4">
+            <a href="{{ path('tracking') }}" class="btn btn-outline btn-success">Suivi de mon dépôt</a>
+            <a href="{{ path('wiki') }}" class="btn btn-outline btn-primary">Wiki des problèmes récurrents</a>
         </div>
     </section>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- Script Bing Maps -->
+    <script src="https://www.bing.com/api/maps/mapcontrol?callback=initMap" async defer></script>
+    <script>
+        let map;
+
+        // Fonction pour initialiser la carte
+        function initMap() {
+            map = new Microsoft.Maps.Map('#map', {
+                credentials: 'AptZrQ6EyTPTvtnG8P3Hmfcmg_uBwhxKOqArcahqPrmwrT3PS_nrZTMn33Ehnw4R', // Remplacez par votre clé Bing Maps
+                center: new Microsoft.Maps.Location(48.8566, 2.3522), // Coordonnées par défaut (Paris)
+                zoom: 10
+            });
+
+            loadPoints();
+        }
+
+        // Fonction pour charger les points de dépôt depuis l'API Symfony
+        function loadPoints() {
+            fetch('/api/locations')
+                .then(response => response.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        data.forEach(location => {
+                            const point = new Microsoft.Maps.Location(location.latitude, location.longitude);
+                            const pin = new Microsoft.Maps.Pushpin(point, {
+                                title: location.title,
+                                color: 'blue'
+                            });
+
+                            // Ajout d'un événement de clic sur le pin
+                            Microsoft.Maps.Events.addHandler(pin, 'click', () => {
+                                // Redirige vers la route Symfony 'map', en passant l'ID du point de dépôt
+                                window.location.href = `/map/${location.id}`;
+                            });
+
+                            // Ajout du pin sur la carte
+                            map.entities.push(pin);
+                        });
+                    } else {
+                        console.error('La réponse n\'est pas un tableau :', data);
+                    }
+                })
+                .catch(error => console.error('Erreur lors du chargement des emplacements :', error));
+        }
+    </script>
 {% endblock %}

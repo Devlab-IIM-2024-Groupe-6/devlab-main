@@ -39,6 +39,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: DeviceMaintenance::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $deviceMaintenances;
 
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    private ?string $trackingNumber = null;
+
     public function __construct()
     {
         $this->deviceMaintenances = new ArrayCollection();
@@ -160,5 +163,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->firstname . ' ' . $this->lastname;
+    }
+
+    public function getTrackingNumber(): ?string
+    {
+        return $this->trackingNumber;
+    }
+
+    public function setTrackingNumber(?string $trackingNumber): static
+    {
+        $this->trackingNumber = $trackingNumber;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function generateTrackingNumber(): void
+    {
+        if (empty($this->trackingNumber)) {
+            $this->trackingNumber = $this->generateRandomTrackingNumber();
+        }
+    }
+
+    private function generateRandomTrackingNumber(): string
+    {
+        return strtoupper(bin2hex(random_bytes(4))) . '-' . random_int(1000, 9999);
     }
 }

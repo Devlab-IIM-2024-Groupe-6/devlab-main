@@ -36,16 +36,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'owner')]
     private ?Deposit $deposit = null;
 
-    #[ORM\OneToMany(targetEntity: DeviceMaintenance::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $deviceMaintenances;
-
     #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $trackingNumber = null;
-
-    public function __construct()
-    {
-        $this->deviceMaintenances = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -130,32 +122,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDeposit(?Deposit $deposit): static
     {
         $this->deposit = $deposit;
-
-        return $this;
-    }
-
-    public function getDeviceMaintenances(): Collection
-    {
-        return $this->deviceMaintenances;
-    }
-
-    public function addDeviceMaintenance(DeviceMaintenance $deviceMaintenance): static
-    {
-        if (!$this->deviceMaintenances->contains($deviceMaintenance)) {
-            $this->deviceMaintenances->add($deviceMaintenance);
-            $deviceMaintenance->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDeviceMaintenance(DeviceMaintenance $deviceMaintenance): static
-    {
-        if ($this->deviceMaintenances->removeElement($deviceMaintenance)) {
-            if ($deviceMaintenance->getUser() === $this) {
-                $deviceMaintenance->setUser(null);
-            }
-        }
 
         return $this;
     }

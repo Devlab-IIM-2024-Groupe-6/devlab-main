@@ -42,7 +42,8 @@ class IndexController extends AbstractController
         }
     
         return $this->render('tracking.html.twig', [
-            'title' => 'Suivi de mon dépôt'
+            'title' => 'Suivi de mon dépôt',
+            'hasResult' => false
         ]);
     }
 
@@ -112,6 +113,25 @@ class IndexController extends AbstractController
             'barcode' => $barcode,
             'trackingNumber' => $trackingNumber,
             'deposit' => $deposit
+        ]);
+    }
+
+    #[Route('/certificate/{trackingNumber}', name: 'client_certificate')]
+    public function generateCertificate(string $trackingNumber, EntityManagerInterface $entityManager): Response
+    {
+        $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+
+        if (!$client) {
+            throw $this->createNotFoundException("Client introuvable.");
+        }
+
+        if (!$trackingNumber) {
+            throw $this->createNotFoundException("Le client n'a pas de numéro de suivi.");
+        }
+
+        return $this->render('certificate/certificate.html.twig', [
+            'client' => $client,
+            'trackingNumber' => $trackingNumber,
         ]);
     }
 }

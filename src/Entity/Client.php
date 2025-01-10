@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ClientRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -32,6 +34,17 @@ class Client
     #[ORM\ManyToOne(inversedBy: 'clients')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Deposit $deposit = null;
+
+    /**
+     * @var Collection<int, DeviceMaintenance>
+     */
+    #[ORM\OneToMany(targetEntity: DeviceMaintenance::class, mappedBy: 'trackingNumber', orphanRemoval: true)]
+    private Collection $deviceMaintenances;
+
+    public function __construct()
+    {
+        $this->deviceMaintenances = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -109,5 +122,35 @@ class Client
     private function generateRandomTrackingNumber(): string
     {
         return strtoupper(bin2hex(random_bytes(4))) . '-' . random_int(1000, 9999);
+    }
+
+    /**
+     * @return Collection<int, DeviceMaintenance>
+     */
+    public function getDeviceMaintenances(): Collection
+    {
+        return $this->deviceMaintenances;
+    }
+
+    public function addDeviceMaintenance(DeviceMaintenance $deviceMaintenance): static
+    {
+        if (!$this->deviceMaintenances->contains($deviceMaintenance)) {
+            $this->deviceMaintenances->add($deviceMaintenance);
+            $deviceMaintenance->setTrackingNumber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDeviceMaintenance(DeviceMaintenance $deviceMaintenance): static
+    {
+        if ($this->deviceMaintenances->removeElement($deviceMaintenance)) {
+            // set the owning side to null (unless already changed)
+            if ($deviceMaintenance->getTrackingNumber() === $this) {
+                $deviceMaintenance->setTrackingNumber(null);
+            }
+        }
+
+        return $this;
     }
 }

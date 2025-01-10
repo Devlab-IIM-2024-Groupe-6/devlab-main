@@ -26,7 +26,12 @@
 				<button type="submit" class="btn btn-primary w-full">Vérifier</button>
 			</form>
 		</section>
-
+		{% for message in app.flashes('error') %}
+		<div class="alert bg-red-100 border-l-3 border-red-500 text-red-700 shadow-lg mt-4 p-4 rounded-lg">
+			<span>{{ message }}</span>
+		</div>
+		
+		{% endfor %}
 		<!-- Résultat du suivi -->
 		<section class="mt-6 hidden" id="tracking-result">
 			<div class="alert alert-info shadow-lg">
@@ -36,5 +41,14 @@
 				</div>
 			</div>
 		</section>
+		{% if hasResult %}
+			{% if trackingNumber %}
+				<p>Numéro de suivi : {{ trackingNumber }}</p>
+				{% if deposit and client %}
+					<h1>Code-barres pour {{ client.firstname }} {{ client.lastname }}</h1>
+					<div>Point de dépôt : {{ deposit.name }}</div>
+				{% endif %}
+			{% endif %}
+		{% endif %}
 	</div>
 {% endblock %}

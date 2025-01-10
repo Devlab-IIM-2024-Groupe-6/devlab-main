@@ -47,7 +47,7 @@ $ symfony serve
 ````
 12. Run the tailwind watch command
 ````shell 
-$ composer tailwind-watch
+$ composer watch
 ````
 13. Go to http://127.0.0.1:8000
 

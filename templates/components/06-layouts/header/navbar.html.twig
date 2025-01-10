@@ -1,55 +1,51 @@
-<div
-	class="navbar bg-white justify-between lg:py-8 lg:px-10 border-b-2 border-darkblue fixed top-0 w-full z-[1000]">
-	<!-- Start -->
-	<div
-		class="flex items-center justify-between w-full lg:w-auto">
-		<!-- Dropdown for mobile -->
-		
-		<!-- Brand -->
-		<a href="{{ path('index') }}" class=""><img class="w-[175px] lg:w-[270px]" src="images/logohds.png"></img></a>
-		<div class="dropdown">
-			<button tabindex="0" class="btn btn-ghost lg:hidden">
-				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewbox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"/>
-				</svg>
-			</button>
-			<ul tabindex="0" class="menu menu-sm dropdown-content text-darkblue w-[100vw] md:w-52 bg-base-100 rounded-box z-[1] mt-3 p-2 shadow r-0">
-				<li>
-					<a href="{{ path('index') }}">Accueil</a>
-				</li>
-				<li>
-					<a href="{{ path('wiki') }}">Wiki</a>
-				</li>
-				<li>
-					<a href="{{ path('tracking') }}">Suivi</a>
-				</li>
-				<li>
-					<a href="{{ path('depot_form', { id: 1 }) }}">Déposer un matériel</a>
-				</li>
+<div class="navbar bg-white justify-between lg:py-8 lg:px-10 border-b-2 border-darkblue fixed top-0 w-full z-[1000]">
+    <!-- Start -->
+    <div class="flex items-center justify-between w-full lg:w-auto">
+        <!-- Dropdown for mobile -->
 
-			</ul>
-		</div>
-	</div>
+        <!-- Brand -->
+        <a href="{{ path('index') }}" class=""><img class="w-[175px] lg:w-[270px]" src="images/logohds.png"></img></a>
+        <div class="dropdown">
+            <button tabindex="0" class="btn btn-ghost lg:hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"/>
+                </svg>
+            </button>
+            <ul tabindex="0" class="menu menu-sm dropdown-content text-darkblue w-[100vw] md:w-52 bg-base-100 rounded-box z-[1] mt-3 p-2 shadow r-0">
+                <li>
+                    <a href="{{ path('index') }}">Accueil</a>
+                </li>
+                <li>
+                    <a href="{{ path('wiki') }}">Wiki</a>
+                </li>
+                <li>
+                    <a href="{{ path('tracking') }}">Suivi</a>
+                </li>
+                <li>
+                    <a href="{{ path('depot_form', { id: 1 }) }}">Déposer un matériel</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 
-	<!-- Center -->
-	<div class="navbar-center hidden lg:flex">
-		<ul class="links-list flex items-center gap-8 px-1 text-darkblue">
-			<li>
-				<a href="{{ path('depot_form') }}" class="nav-link text-red-500">Donner mon appareil</a>
-			</li>
-			<li>
-				<a href="{{ path('tracking') }}" class="nav-link text-red-500">Suivre mon colis</a>
-			</li>
-			<li>
-				<a href="{{ path('tracking') }}">Suivi</a>
-			</li>
-			<li>
-				<a href="{{ path('depot_form', { id: 1 }) }}">Déposer un matériel</a>
-				<a href="{{ path('wiki') }}" class="nav-link">Résolution de problèmes</a>
-			</li>
-
-		</ul>
-	</div>
+    <!-- Center -->
+    <div class="navbar-center hidden lg:flex">
+        <ul class="links-list flex items-center gap-8 px-1 text-darkblue">
+            <li>
+                <a href="{{ path('depot_form', { id: 1 }) }}" class="nav-link text-red-500">Donner mon appareil</a>
+            </li>
+            <li>
+                <a href="{{ path('tracking') }}" class="nav-link text-red-500">Suivre mon colis</a>
+            </li>
+            <li>
+                <a href="{{ path('tracking') }}">Suivi</a>
+            </li>
+            <li>
+                <a href="{{ path('depot_form', { id: 1 }) }}">Déposer un matériel</a>
+                <a href="{{ path('wiki') }}" class="nav-link">Résolution de problèmes</a>
+            </li>
+        </ul>
+    </div>
 </div>
 
 <style>

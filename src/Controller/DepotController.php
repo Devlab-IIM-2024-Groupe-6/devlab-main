@@ -31,9 +31,17 @@ class DepotController extends AbstractController
     }
 
     #[Route('/api/locations', name: 'api_locations', methods: ['GET'])]
-    public function getLocations(EntityManagerInterface $entityManager): JsonResponse
+    public function getLocations(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
+        $searchQuery = $request->query->get('search');
         $deposits = $entityManager->getRepository(Deposit::class)->findAll();
+
+        if ($searchQuery) {
+            $deposits = array_filter($deposits, function($deposit) use ($searchQuery) {
+                return stripos($deposit->getName(), $searchQuery) !== false ||
+                       stripos($deposit->getAddress(), $searchQuery) !== false;
+            });
+        }
 
         $locations = [];
         foreach ($deposits as $deposit) {

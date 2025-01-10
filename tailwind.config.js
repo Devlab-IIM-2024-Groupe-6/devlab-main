@@ -6,6 +6,10 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    colors: {
+      darkblue: "#0A3C6E",
+      lightblue: "#0171B8"
+    }
   },
   plugins: [
     require('daisyui'),

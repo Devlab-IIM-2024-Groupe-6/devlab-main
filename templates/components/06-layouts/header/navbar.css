@@ -1,0 +1,33 @@
+.links-list {
+    gap: 40px;
+    font-size: 18px;
+}
+
+.nav-link {
+    position: relative;
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 30%;
+    height: 2px;
+    background: #0171B8;
+    transition: width 0.3s;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.dropdown {
+    position: inherit;
+}
+
+.dropdown-content {
+    left: 0;
+    width: 100vw;
+    gap: 20px;
+}

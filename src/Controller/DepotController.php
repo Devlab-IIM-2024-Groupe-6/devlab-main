@@ -13,20 +13,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DepotController extends AbstractController
 {
-    #[Route('/depot', name: 'depot_form')]
-    public function depot(Request $request): Response
+    #[Route('/depot/{id}', name: 'depot_form')]
+    public function depot(Request $request, int $id, EntityManagerInterface $entityManager): Response
     {
+        $deposit = $entityManager->getRepository(Deposit::class)->find($id);
+
+        if (!$deposit) {
+            throw $this->createNotFoundException('Localisation non trouvée');
+        }
+
         $form = $this->createForm(DepotType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $this->addFlash('success', 'Votre dépôt a été enregistré avec succès.');
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('depot_form', ['id' => $id]);
         }
 
         return $this->render('depot/form.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form->createView(), // Assurez-vous de passer la vue du formulaire
+            'locationName' => $deposit->getName(),
+            'id' => $id,
         ]);
     }
 

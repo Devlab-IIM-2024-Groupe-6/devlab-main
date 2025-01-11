@@ -5,7 +5,6 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
-
         #mapContainer {
             position: relative;
             width: 100%;
@@ -14,7 +13,6 @@
         #map {
             width: 100%;
         }
-
 
         /* Informations sur le lieu */
         .FilterMap h3 {
@@ -95,8 +93,6 @@
                 font-size: 0.8em;
             }
         }
-
-
 
         /* Boutons de navigation */
         .navigation {
@@ -211,9 +207,10 @@
         <div id="mapContainer" class="relative rounded-lg bg-gray-200 lg:flex items-center justify-center">
             <div id="map" class="w-full h-60 md:h-96"></div>
             <div id="locationInfo" class="FilterMap bg-darkblue h-auto md:h-full top-0 left-0 rounded-lg rounded-tr-none rounded-tl-none lg:rounded-r-none lg:rounded-tl-lg flex flex-col justify-between">
-                <div class="location-info">
+                <div class="location-info gap-4">
                     <h3 id="locationTitle" class="font-bold">Paris</h3>
-                    <h4 id="locationDescription" >Description plutôt courte de la ville et ses environs.</h4>
+                    <h4 id="locationDescription">Description plus ou moins courte de la ville comme ceci.</h4>
+                    <a id="depotLink" class="text-white underline font-bold" href="#">Accéder au Dépôt</a>
                 </div>
                 <div class="navigation">
                     <button id="prevLocation">Précédent</button>
@@ -333,6 +330,10 @@
             currentIndex = locations.indexOf(location);
             document.getElementById('locationTitle').textContent = location.title;
             document.getElementById('locationDescription').textContent = `Latitude: ${location.latitude}, Longitude: ${location.longitude}`;
+
+            // Mettre à jour le lien du dépôt avec l'ID de la localisation
+            const depotLink = document.getElementById('depotLink');
+            depotLink.href = `http://127.0.0.1:8000/depot/${location.id}`;
 
             // Ajouter une classe pour l'animation d'ouverture
             const locationInfo = document.getElementById('locationInfo');

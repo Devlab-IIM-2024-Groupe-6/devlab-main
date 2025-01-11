@@ -41,5 +41,14 @@
 				</div>
 			</div>
 		</section>
+		{% if hasResult %}
+			{% if trackingNumber %}
+				<p>Numéro de suivi : {{ trackingNumber }}</p>
+				{% if deposit and client %}
+					<h1>Code-barres pour {{ client.firstname }} {{ client.lastname }}</h1>
+					<div>Point de dépôt : {{ deposit.name }}</div>
+				{% endif %}
+			{% endif %}
+		{% endif %}
 	</div>
 {% endblock %}

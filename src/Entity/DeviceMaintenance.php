@@ -12,13 +12,6 @@ class DeviceMaintenance
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'deviceMaintenances')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $trackingNumber = null;
-
     #[ORM\Column]
     private ?int $currentStep = null;
 
@@ -70,33 +63,13 @@ class DeviceMaintenance
     #[ORM\Column]
     private ?bool $powerSupply = null;
 
+    #[ORM\ManyToOne(inversedBy: 'deviceMaintenances')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Client $trackingNumber = null;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getTrackingNumber(): ?string
-    {
-        return $this->trackingNumber;
-    }
-
-    public function setTrackingNumber(string $trackingNumber): static
-    {
-        $this->trackingNumber = $trackingNumber;
-
-        return $this;
     }
 
     public function getCurrentStep(): ?int
@@ -299,6 +272,18 @@ class DeviceMaintenance
     public function setPowerSupply(bool $powerSupply): static
     {
         $this->powerSupply = $powerSupply;
+
+        return $this;
+    }
+
+    public function getTrackingNumber(): ?Client
+    {
+        return $this->trackingNumber;
+    }
+
+    public function setTrackingNumber(?Client $trackingNumber): static
+    {
+        $this->trackingNumber = $trackingNumber;
 
         return $this;
     }

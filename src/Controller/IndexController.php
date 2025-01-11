@@ -35,14 +35,51 @@ class IndexController extends AbstractController
             $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
     
             if ($client) {
-                return $this->redirectToRoute('client_barcode', ['trackingNumber' => $trackingNumber]);
+                return $this->redirectToRoute('trackingId', ['trackingNumber' => $trackingNumber]);
             }
 
             $this->addFlash('error', 'Numéro de suivi invalide ou introuvable.');
         }
     
         return $this->render('tracking.html.twig', [
-            'title' => 'Suivi de mon dépôt'
+            'title' => 'Suivi de mon dépôt',
+            'hasResult' => false
+        ]);
+    }
+
+    #[Route('/suivi/{trackingNumber}', name: 'trackingId', methods: ['GET', 'POST'])]
+    public function trackingId(string $trackingNumber, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        if ($request->isMethod('POST')) {
+            $trackingNumber = $request->request->get('tracking_number');
+            
+            $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+    
+            if ($client) {
+                return $this->redirectToRoute('trackingId', ['trackingNumber' => $trackingNumber]);
+            }
+
+            $this->addFlash('error', 'Numéro de suivi invalide ou introuvable.');
+            return $this->render('tracking.html.twig', [
+                'title' => 'Suivi de mon dépôt',
+                'hasResult' => false
+            ]);
+        }
+
+        $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+
+        if (!$client) {
+            throw $this->createNotFoundException("Client ou utilisateur introuvable.");
+        }
+
+        $deposit = $client->getDeposit();
+
+        return $this->render('tracking.html.twig', [
+            'title' => 'Suivi de mon dépôt',
+            'hasResult' => true,
+            'trackingNumber' => $trackingNumber,
+            'deposit' => $deposit,
+            'client' => $client
         ]);
     }
 
@@ -54,7 +91,7 @@ class IndexController extends AbstractController
         ]);
     }
 
-    #[Route('/client/{trackingNumber}', name: 'client_barcode')]
+    #[Route('/barcode/{trackingNumber}', name: 'client_barcode')]
     public function generateClientBarcode(string $trackingNumber, EntityManagerInterface $entityManager): Response
     {
         $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
@@ -71,11 +108,30 @@ class IndexController extends AbstractController
     
         $deposit = $client->getDeposit();
 
-        return $this->render('client/barcode.html.twig', [
+        return $this->render('barcode/barcode.html.twig', [
             'client' => $client,
             'barcode' => $barcode,
             'trackingNumber' => $trackingNumber,
             'deposit' => $deposit
         ]);
-    }    
+    }
+
+    #[Route('/certificate/{trackingNumber}', name: 'client_certificate')]
+    public function generateCertificate(string $trackingNumber, EntityManagerInterface $entityManager): Response
+    {
+        $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+
+        if (!$client) {
+            throw $this->createNotFoundException("Client introuvable.");
+        }
+
+        if (!$trackingNumber) {
+            throw $this->createNotFoundException("Le client n'a pas de numéro de suivi.");
+        }
+
+        return $this->render('certificate/certificate.html.twig', [
+            'client' => $client,
+            'trackingNumber' => $trackingNumber,
+        ]);
+    }
 }

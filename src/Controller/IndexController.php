@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Entity\Client;
+use App\Entity\DeviceMaintenance;
 use App\Service\BarcodeGeneratorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,7 +70,9 @@ class IndexController extends AbstractController
         $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
 
         if (!$client) {
-            throw $this->createNotFoundException("Client ou utilisateur introuvable.");
+            return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
+                'message' => "Client ou utilisateur introuvable."
+            ], new Response('', 404));
         }
 
         $deposit = $client->getDeposit();
@@ -97,11 +100,15 @@ class IndexController extends AbstractController
         $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
 
         if (!$client) {
-            throw $this->createNotFoundException("Client introuvable.");
+            return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
+                'message' => 'Client introuvable'
+            ], new Response('', 404));
         }
 
         if (!$trackingNumber) {
-            throw $this->createNotFoundException("Le client n'a pas de numéro de suivi.");
+            return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
+                'message' => "Le client n'a pas de numéro de suivi."
+            ], new Response('', 404));
         }
     
         $barcode = $this->barcodeGenerator->generateBarcode($trackingNumber);
@@ -120,18 +127,69 @@ class IndexController extends AbstractController
     public function generateCertificate(string $trackingNumber, EntityManagerInterface $entityManager): Response
     {
         $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
-
+    
         if (!$client) {
-            throw $this->createNotFoundException("Client introuvable.");
+            return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
+                'message' => 'Client introuvable'
+            ], new Response('', 404));
         }
-
-        if (!$trackingNumber) {
-            throw $this->createNotFoundException("Le client n'a pas de numéro de suivi.");
-        }
-
+    
+        $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $client]);
+    
         return $this->render('certificate/certificate.html.twig', [
             'client' => $client,
+            'deviceMaintenance' => $deviceMaintenance,
             'trackingNumber' => $trackingNumber,
         ]);
+    }
+
+    #[Route('/download/{type}/{trackingNumber}', name: 'download_pdf')]
+    public function downloadPdf(string $type, string $trackingNumber, EntityManagerInterface $entityManager): Response
+    {
+        $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+
+        if (!$client) {
+            return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
+                'message' => 'Client introuvable'
+            ], new Response('', 404));
+        }
+
+        if ($type === 'barcode') {
+            $html = $this->renderView('barcode/barcode_pdf.html.twig', [
+                'client' => $client,
+                'trackingNumber' => $trackingNumber,
+                'barcode' => $this->barcodeGenerator->generateBarcode($trackingNumber),
+                'deposit' => $client->getDeposit(),
+            ]);
+        } elseif ($type === 'certificate') {
+            $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $client]);
+
+            $html = $this->renderView('certificate/certificate_pdf.html.twig', [
+                'client' => $client,
+                'deviceMaintenance' => $deviceMaintenance,
+                'trackingNumber' => $trackingNumber,
+            ]);
+        } else {
+            return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
+                'message' => 'Type de téléchargement non supporté'
+            ], new Response('', 404));
+        }
+
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $response = new Response($dompdf->output());
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $type . '_' . $trackingNumber . '.pdf"');
+
+        return $response;
+    }
+
+    #[Route('/{any}', name: 'not_found', requirements: ['any' => '.*'])]
+    public function notFound(): Response
+    {
+        return $this->render('bundles/TwigBundle/Exception/404.html.twig', [], new Response('', 404));
     }
 }

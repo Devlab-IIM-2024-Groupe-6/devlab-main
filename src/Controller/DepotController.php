@@ -19,7 +19,9 @@ class DepotController extends AbstractController
         $deposit = $entityManager->getRepository(Deposit::class)->find($id);
 
         if (!$deposit) {
-            throw $this->createNotFoundException('Localisation non trouvée');
+            return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
+                'message' => "Localisation non trouvée"
+            ], new Response('', 404));
         }
 
         $form = $this->createForm(DepotType::class);

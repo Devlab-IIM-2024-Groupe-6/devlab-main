@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Client;
 
 class DepotController extends AbstractController
 {
@@ -24,14 +25,25 @@ class DepotController extends AbstractController
             ], new Response('', 404));
         }
 
+        $client = new Client();
+
         $form = $this->createForm(DepotType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $this->addFlash('success', 'Votre dépôt a été enregistré avec succès.');
-            return $this->redirectToRoute('depot_form', ['id' => $id]);
+        
+            // Assigner les valeurs du formulaire à l'entité Client
+            $client->setFirstName($data['first_name']);
+            $client->setLastName($data['last_name']);
+            $client->setEmail($data['email']);
+            $client->settrackingNumber(uniqid());
+            $client->setDeposit($deposit);
+        
+            $entityManager->persist($client);
+            $entityManager->flush();
         }
+        
 
         return $this->render('depot/form.html.twig', [
             'form' => $form->createView(), // Assurez-vous de passer la vue du formulaire

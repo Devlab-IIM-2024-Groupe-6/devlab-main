@@ -24,10 +24,26 @@
             <input type="hidden" name="location" value="{{ id }}">
 
             <div class="form-control mb-4">
-                {{ form_label(form.item_name, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
-                {{ form_widget(form.item_name, {'attr': {'class': 'input input-bordered w-full'}}) }}
+                {{ form_label(form.first_name, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
+                {{ form_widget(form.first_name, {'attr': {'class': 'input input-bordered w-full'}}) }}
                 <div class="text-error text-sm">
-                    {{ form_errors(form.item_name) }}
+                    {{ form_errors(form.first_name) }}
+                </div>
+            </div>
+
+            <div class="form-control mb-4">
+                {{ form_label(form.last_name, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
+                {{ form_widget(form.last_name, {'attr': {'class': 'input input-bordered w-full'}}) }}
+                <div class="text-error text-sm">
+                    {{ form_errors(form.last_name) }}
+                </div>
+            </div>
+
+            <div class="form-control mb-4">
+                {{ form_label(form.email, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
+                {{ form_widget(form.email, {'attr': {'class': 'input input-bordered w-full', 'type': 'email'}}) }}
+                <div class="text-error text-sm">
+                    {{ form_errors(form.email) }}
                 </div>
             </div>
 
@@ -37,12 +53,8 @@
                 <input type="text" id="location" class="input input-bordered w-full" value="{{ locationName }}" readonly>
             </div>
 
-            <div class="form-control mb-4">
-                {{ form_label(form.item_description, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
-                {{ form_widget(form.item_description, {'attr': {'class': 'textarea textarea-bordered w-full'}}) }}
-                <div class="text-error text-sm">
-                    {{ form_errors(form.item_description) }}
-                </div>
+            <div class="mt-6">
+                <a href="{{ path('depot_form', { id: id }) }}" class="btn btn-link">Renseigner plus</a>
             </div>
 
             <div class="form-control mt-6">

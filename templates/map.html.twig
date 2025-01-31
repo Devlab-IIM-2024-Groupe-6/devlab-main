@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Interactive</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Layout principal */
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Style du panneau de filtre/information */
+        .FilterMap {
+            width: 30%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            box-shadow: 4px 0 8px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            transition: width 0.3s;
+        }
+
+        /* Informations sur le lieu */
+        .FilterMap h3 {
+            font-size: 1.8em;
+            color: #1abc9c;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .location-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #34495e;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .location-info h4 {
+            font-size: 1.5em;
+            color: #1abc9c;
+            margin-bottom: 10px;
+        }
+
+        .location-info p {
+            font-size: 1em;
+            color: #bdc3c7;
+            line-height: 1.5em;
+        }
+
+        /* Boutons de navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .navigation button {
+            padding: 12px 18px;
+            font-size: 1em;
+            background-color: #1abc9c;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            transition: all 0.3s;
+            width: 48%;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .navigation button:hover {
+            background-color: #16a085;
+            box-shadow: 0px 6px 10px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive - Mobile ajustements */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            #map {
+                height: 50vh;
+                width: 100%;
+            }
+
+            .FilterMap {
+                width: 100%;
+                max-width: none;
+                height: 50vh;
+                position: relative;
+                bottom: 0;
+                z-index: 1;
+            }
+
+            .FilterMap h3 {
+                font-size: 1.4em;
+            }
+
+            .navigation button {
+                font-size: 0.9em;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+    <script src='https://www.bing.com/api/maps/mapcontrol?callback=getMap' async defer></script>
+</head>
+<body>
+
+<div class="FilterMap">
+    <h3>Informations sur l'emplacement</h3>
+    <div class="location-info" id="locationInfo">
+        <h4 id="locationTitle">Nom du lieu</h4>
+        <p id="locationDescription">Description du lieu</p>
+    </div>
+    <div class="navigation">
+        <button id="prevLocation">Précédent</button>
+        <button id="nextLocation">Suivant</button>
+    </div>
+</div>
+
+<div id="map"></div>
+
+<script>
+    let map;
+    let locations = [];
+    let currentIndex = 0;
+
+    function getMap() {
+        map = new Microsoft.Maps.Map('#map', {
+            credentials: 'AptZrQ6EyTPTvtnG8P3Hmfcmg_uBwhxKOqArcahqPrmwrT3PS_nrZTMn33Ehnw4R',
+            zoom: 10
+        });
+
+        // Récupérer l'ID depuis le chemin de l'URL (ex : /map/1)
+        const urlParams = window.location.pathname.split('/');
+        const selectedId = parseInt(urlParams[urlParams.length - 1]); // Dernier segment de l'URL
+
+        console.log("ID récupéré : ", selectedId); // Vérifier si l'ID est bien récupéré
+
+        if (isNaN(selectedId) || selectedId <= 0) {
+            console.error("ID invalide ou manquant dans l'URL");
+            return; // Arrêter le chargement si l'ID est invalide
+        }
+
+        loadPoints(selectedId);  // Passer l'ID au chargement des points
+    }
+
+    function loadPoints(selectedId) {
+        fetch('/api/locations')  // Récupère les points depuis l'API Symfony
+            .then(response => response.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    locations = data;
+                    currentIndex = locations.findIndex(loc => loc.id === selectedId); // Trouver l'emplacement sélectionné par ID
+                    if (currentIndex === -1) currentIndex = 0;  // Si pas trouvé, charger le premier
+                    showLocation(currentIndex);  // Afficher l'emplacement trouvé
+                } else {
+                    console.error('La réponse n\'est pas un tableau :', data);
+                }
+            })
+            .catch(error => console.error('Erreur lors du chargement des emplacements :', error));
+    }
+
+    function showLocation(index) {
+        if (locations.length === 0) return;
+
+        currentIndex = index;
+        const location = locations[index];
+
+        document.getElementById('locationTitle').textContent = location.title;
+        document.getElementById('locationDescription').textContent = location.description;
+
+        const point = new Microsoft.Maps.Location(location.latitude, location.longitude);
+        map.setView({ center: point, zoom: 14 });
+
+        map.entities.clear();
+        const pin = new Microsoft.Maps.Pushpin(point, {
+            title: location.title,
+            color: 'red'
+        });
+        map.entities.push(pin);
+    }
+
+    // Gestion des boutons Précédent et Suivant
+    document.getElementById('prevLocation').addEventListener('click', () => {
+        const newIndex = (currentIndex - 1 + locations.length) % locations.length;
+        showLocation(newIndex);
+    });
+
+    document.getElementById('nextLocation').addEventListener('click', () => {
+        const newIndex = (currentIndex + 1) % locations.length;
+        showLocation(newIndex);
+    });
+</script>
+
+</body>
+</html>

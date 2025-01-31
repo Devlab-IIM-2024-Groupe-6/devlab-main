@@ -3,6 +3,9 @@ namespace App\Entity;
 
 use App\Repository\DeviceMaintenanceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DeviceMaintenanceRepository::class)]
 class DeviceMaintenance
@@ -11,13 +14,6 @@ class DeviceMaintenance
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\ManyToOne(inversedBy: 'deviceMaintenances')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $trackingNumber = null;
 
     #[ORM\Column]
     private ?int $currentStep = null;
@@ -70,33 +66,12 @@ class DeviceMaintenance
     #[ORM\Column]
     private ?bool $powerSupply = null;
 
+    #[ORM\Column(type: "string")]
+    private ?string $trackingNumber = null;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getTrackingNumber(): ?string
-    {
-        return $this->trackingNumber;
-    }
-
-    public function setTrackingNumber(string $trackingNumber): static
-    {
-        $this->trackingNumber = $trackingNumber;
-
-        return $this;
     }
 
     public function getCurrentStep(): ?int
@@ -300,6 +275,17 @@ class DeviceMaintenance
     {
         $this->powerSupply = $powerSupply;
 
+        return $this;
+    }
+
+    public function getTrackingNumber(): ?string
+    {
+        return $this->trackingNumber;
+    }
+
+    public function setTrackingNumber(string $trackingNumber): self
+    {
+        $this->trackingNumber = $trackingNumber;
         return $this;
     }
 }

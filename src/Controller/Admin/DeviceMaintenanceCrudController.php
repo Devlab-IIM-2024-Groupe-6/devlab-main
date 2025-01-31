@@ -5,8 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\DeviceMaintenance;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
@@ -21,14 +20,23 @@ class DeviceMaintenanceCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm()->hideOnIndex(),
-            AssociationField::new('user')
-                ->setRequired(true)
-                ->setFormTypeOption('attr', ['required' => 'required']),
-            TextField::new('trackingNumber'),
-            IntegerField::new('currentStep')
+            AssociationField::new('trackingNumber')
+                ->setFormTypeOption('query_builder', function($repository) {
+                    return $repository->createQueryBuilder('c')
+                        ->orderBy('c.trackingNumber', 'ASC');
+                })
+                ->setFormTypeOption('choice_label', 'trackingNumber'),
+            ChoiceField::new('currentStep')
+                ->setChoices([
+                    1 => '1',
+                    2 => '2',
+                    3 => '3',
+                    4 => '4',
+                    5 => '5',
+                    6 => '6',
+                ])
                 ->setFormTypeOption('attr', [
-                    'min' => 1,
-                    'max' => 6,
+                    'class' => 'form-control',
                 ]),
             BooleanField::new('screen'),
             BooleanField::new('oxidationStatus'),

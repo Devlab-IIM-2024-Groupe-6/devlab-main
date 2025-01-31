@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.3",
+        "dompdf/dompdf": "^3.1",
         "easycorp/easyadmin-bundle": "^4.14",
         "picqer/php-barcode-generator": "^2.4",
         "symfony/asset": "6.4.*",
@@ -72,7 +73,7 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "tailwind-watch": "php bin/console tailwind:build --watch"
+        "watch": "php bin/console tailwind:build --watch"
     },
     "conflict": {
         "symfony/symfony": "*"

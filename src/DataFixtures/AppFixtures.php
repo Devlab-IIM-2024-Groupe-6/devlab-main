@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Client;
 use App\Entity\User;
 use App\Entity\Deposit;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -41,6 +42,15 @@ class AppFixtures extends Fixture
         $user->setDeposit($deposit);
 
         $manager->persist($user);
+
+        $client = new Client();
+        $client->setFirstname('John');
+        $client->setLastname('Doe');
+        $client->setEmail('John@Doe.com');
+        $client->setTrackingNumber('F094F400-3936');
+        $client->setDeposit($deposit);
+        
+        $manager->persist($client);
 
         $manager->flush();
     }

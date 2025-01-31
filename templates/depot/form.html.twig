@@ -1,46 +1,87 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Déposer un matériel
-{% endblock %}
+{% block title %}Déposer un matériel{% endblock %}
 
 {% block body %}
-	<div
-		class="container mx-auto my-10 px-6 lg:px-20">
-		<!-- Header -->
-		<header class="mb-8">
-			<h1 class="text-4xl font-bold text-primary">Déposer un matériel</h1>
-		</header>
+    <div class="container mx-auto my-10 px-6 lg:px-20">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-primary">Déposer un matériel</h1>
+        </header>
 
-		<!-- Flash Messages -->
-		{% for message in app.flashes('success') %}
-			<div class="alert alert-success shadow-lg mb-4">
-				{{ message }}
-			</div>
-		{% endfor %}
-{#! A=Ajouter le formulaire comme pour le user dans easy admin #}
-		<!-- Formulaire -->
-		<section class="bg-base-100 shadow-md rounded-lg p-6">
-			{{ form_start(form) }}
-			<div class="form-control mb-4">
-				{{ form_label(form.item_name, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
-				{{ form_widget(form.item_name, {'attr': {'class': 'input input-bordered w-full'}}) }}
-				<div class="text-error text-sm">
-					{{ form_errors(form.item_name) }}
-				</div>
-			</div>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success shadow-lg mb-4">
+                {{ message }}
+            </div>
+        {% endfor %}
 
-			<div class="form-control mb-4">
-				{{ form_label(form.item_description, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
-				{{ form_widget(form.item_description, {'attr': {'class': 'textarea textarea-bordered w-full'}}) }}
-				<div class="text-error text-sm">
-					{{ form_errors(form.item_description) }}
-				</div>
-			</div>
+        <section class="bg-base-100 shadow-md rounded-lg p-6">
+            {{ form_start(form) }}
 
-			<div class="form-control mt-6">
-				{{ form_widget(form.submit, {'attr': {'class': 'btn btn-success w-full'}}) }}
-			</div>
-			{{ form_end(form) }}
-		</section>
-	</div>
+            <input type="hidden" name="location" value="{{ id }}">
+
+            <div class="form-control mb-4">
+                {{ form_label(form.first_name, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
+                {{ form_widget(form.first_name, {'attr': {'class': 'input input-bordered w-full'}}) }}
+                <div class="text-error text-sm">
+                    {{ form_errors(form.first_name) }}
+                </div>
+            </div>
+
+            <div class="form-control mb-4">
+                {{ form_label(form.last_name, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
+                {{ form_widget(form.last_name, {'attr': {'class': 'input input-bordered w-full'}}) }}
+                <div class="text-error text-sm">
+                    {{ form_errors(form.last_name) }}
+                </div>
+            </div>
+
+            <div class="form-control mb-4">
+                {{ form_label(form.email, null, {'label_attr': {'class': 'label-text font-semibold'}}) }}
+                {{ form_widget(form.email, {'attr': {'class': 'input input-bordered w-full', 'type': 'email'}}) }}
+                <div class="text-error text-sm">
+                    {{ form_errors(form.email) }}
+                </div>
+            </div>
+
+            <div class="form-control mb-4">
+                <label for="location" class="label-text font-semibold">Localisation</label>
+                <input type="text" id="location" class="input input-bordered w-full" value="{{ locationName }}" readonly>
+            </div>
+
+            <div class="mt-6">
+                <button type="button" id="toggleDropdown" class="btn btn-link">Renseigner plus</button>
+            </div>
+
+            <div id="dropdownOptions" class="hidden mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
+                <label class="block mb-2"><input type="checkbox" name="screen"> Écran</label>
+                <label class="block mb-2"><input type="checkbox" name="oxidation_status"> État d'oxydation</label>
+                <label class="block mb-2"><input type="checkbox" name="hinges"> Charnières</label>
+                <label class="block mb-2"><input type="checkbox" name="fan"> Ventilateur</label>
+                <label class="block mb-2"><input type="checkbox" name="button"> Boutons</label>
+                <label class="block mb-2"><input type="checkbox" name="sensors"> Capteurs</label>
+                <label class="block mb-2"><input type="checkbox" name="chassis"> Châssis</label>
+                <label class="block mb-2"><input type="checkbox" name="data_wipe"> Effacement des données</label>
+                <label class="block mb-2"><input type="checkbox" name="computer_unlock"> Déverrouillage PC</label>
+                <label class="block mb-2"><input type="checkbox" name="driver"> Pilotes</label>
+                <label class="block mb-2"><input type="checkbox" name="computer_update"> Mise à jour PC</label>
+                <label class="block mb-2"><input type="checkbox" name="motherboard"> Carte mère</label>
+                <label class="block mb-2"><input type="checkbox" name="networks"> Réseaux</label>
+                <label class="block mb-2"><input type="checkbox" name="components"> Composants</label>
+                <label class="block mb-2"><input type="checkbox" name="battery"> Batterie</label>
+                <label class="block mb-2"><input type="checkbox" name="power_supply"> Alimentation</label>
+            </div>
+
+            <div class="form-control mt-6">
+                {{ form_widget(form.submit, {'attr': {'class': 'btn btn-success w-full'}}) }}
+            </div>
+            {{ form_end(form) }}
+        </section>
+    </div>
+
+    <script>
+        document.getElementById('toggleDropdown').addEventListener('click', function() {
+            let dropdown = document.getElementById('dropdownOptions');
+            dropdown.classList.toggle('hidden');
+        });
+    </script>
 {% endblock %}

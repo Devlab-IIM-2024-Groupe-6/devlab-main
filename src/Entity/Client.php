@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ClientRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -33,6 +35,17 @@ class Client
     #[ORM\JoinColumn(nullable: false)]
     private ?Deposit $deposit = null;
 
+    /**
+     * @var Collection<int, DeviceMaintenance>
+     */
+    #[ORM\OneToMany(targetEntity: DeviceMaintenance::class, mappedBy: 'trackingNumber', orphanRemoval: true)]
+    private Collection $deviceMaintenances;
+
+    public function __construct()
+    {
+        $this->deviceMaintenances = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -43,10 +56,9 @@ class Client
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -55,10 +67,9 @@ class Client
         return $this->firstname;
     }
 
-    public function setFirstname(string $firstname): static
+    public function setFirstname(string $firstname): self
     {
         $this->firstname = $firstname;
-
         return $this;
     }
 
@@ -67,10 +78,9 @@ class Client
         return $this->lastname;
     }
 
-    public function setLastname(string $lastname): static
+    public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
-
         return $this;
     }
 
@@ -79,10 +89,9 @@ class Client
         return $this->trackingNumber;
     }
 
-    public function setTrackingNumber(string $trackingNumber): static
+    public function setTrackingNumber(string $trackingNumber): self
     {
         $this->trackingNumber = $trackingNumber;
-
         return $this;
     }
 
@@ -91,23 +100,39 @@ class Client
         return $this->deposit;
     }
 
-    public function setDeposit(?Deposit $deposit): static
+    public function setDeposit(?Deposit $deposit): self
     {
         $this->deposit = $deposit;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DeviceMaintenance>
+     */
+    public function getDeviceMaintenances(): Collection
+    {
+        return $this->deviceMaintenances;
+    }
+
+    public function addDeviceMaintenance(DeviceMaintenance $deviceMaintenance): self
+    {
+        if (!$this->deviceMaintenances->contains($deviceMaintenance)) {
+            $this->deviceMaintenances[] = $deviceMaintenance;
+            $deviceMaintenance->setTrackingNumber($this);
+        }
 
         return $this;
     }
 
-    #[ORM\PrePersist]
-    public function generateTrackingNumber(): void
+    public function removeDeviceMaintenance(DeviceMaintenance $deviceMaintenance): self
     {
-        if (empty($this->trackingNumber)) {
-            $this->trackingNumber = $this->generateRandomTrackingNumber();
+        if ($this->deviceMaintenances->removeElement($deviceMaintenance)) {
+            // set the owning side to null (unless already changed)
+            if ($deviceMaintenance->getTrackingNumber() === $this) {
+                $deviceMaintenance->setTrackingNumber(null);
+            }
         }
-    }
 
-    private function generateRandomTrackingNumber(): string
-    {
-        return strtoupper(bin2hex(random_bytes(4))) . '-' . random_int(1000, 9999);
+        return $this;
     }
 }

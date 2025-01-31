@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block nav %} {% endblock %}
+
+{% block title %}Certificat de reconditionnement{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto pb-4">
+        <h1 class="text-2xl font-bold mb-4">Certificat de reconditionnement</h1>
+
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <h2 class="text-xl font-semibold mb-4">Détails de la Maintenance</h2>
+
+            <div class="mb-4">
+                <h3 class="font-bold">Client:</h3>
+                <p>{{ client.firstname }} {{ client.lastname }}</p>
+            </div>
+
+            <div class="mb-4">
+                <h3 class="font-bold">Numéro de suivi:</h3>
+                <p>{{ trackingNumber }}</p>
+            </div>
+
+            {% if deviceMaintenance %}
+                <div class="mb-4">
+                    <h3 class="font-bold">État de la Maintenance:</h3>
+                    <p>Étape actuelle: {{ deviceMaintenance.currentStep }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="font-bold">Points de contrôle:</h3>
+                    <ul class="list-disc pl-5">
+                        <li>Écran: {{ deviceMaintenance.screen ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>État d'oxydation: {{ deviceMaintenance.oxidationStatus ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Charnières: {{ deviceMaintenance.hinges ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Ventilateur: {{ deviceMaintenance.fan ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Boutons: {{ deviceMaintenance.button ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Capteurs: {{ deviceMaintenance.sensors ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Châssis: {{ deviceMaintenance.chassis ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Effacement des données: {{ deviceMaintenance.dataWipe ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Déverrouillage: {{ deviceMaintenance.computerUnlock ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Pilotes: {{ deviceMaintenance.driver ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Mise à jour: {{ deviceMaintenance.computerUpdate ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Carte mère: {{ deviceMaintenance.motherboard ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Réseaux: {{ deviceMaintenance.networks ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Composants: {{ deviceMaintenance.components ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Batterie: {{ deviceMaintenance.battery ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>
+                        <li>Alimentation: {{ deviceMaintenance.powerSupply ? '<i class="fa-regular fa-circle-check text-green"></i>' : '<i class="fa-regular fa-circle-xmark text-red"></i>' }}</li>  
+                    </ul>
+                </div>
+            {% else %}
+                <div class="mb-4">
+                    <p class="text-green-500">La maintenance a été validée avec succès.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <a href="{{ path('download_pdf', {'type': 'certificate', 'trackingNumber': trackingNumber}) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Télécharger le certificat en PDF
+        </a>
+    </div>
+{% endblock %}
+
+{% block footer %} {% endblock %}

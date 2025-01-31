@@ -3,6 +3,9 @@ namespace App\Entity;
 
 use App\Repository\DeviceMaintenanceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DeviceMaintenanceRepository::class)]
 class DeviceMaintenance
@@ -63,9 +66,8 @@ class DeviceMaintenance
     #[ORM\Column]
     private ?bool $powerSupply = null;
 
-    #[ORM\ManyToOne(inversedBy: 'deviceMaintenances')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Client $trackingNumber = null;
+    #[ORM\Column(type: "string")]
+    private ?string $trackingNumber = null;
 
     public function getId(): ?int
     {
@@ -276,15 +278,14 @@ class DeviceMaintenance
         return $this;
     }
 
-    public function getTrackingNumber(): ?Client
+    public function getTrackingNumber(): ?string
     {
         return $this->trackingNumber;
     }
 
-    public function setTrackingNumber(?Client $trackingNumber): static
+    public function setTrackingNumber(string $trackingNumber): self
     {
         $this->trackingNumber = $trackingNumber;
-
         return $this;
     }
 }

@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Client;
+use App\Entity\DeviceMaintenance;
 
 class DepotController extends AbstractController
 {
@@ -24,21 +25,49 @@ class DepotController extends AbstractController
         }
 
         $client = new Client();
+        $deviceMaintenance = new DeviceMaintenance();
 
         $form = $this->createForm(DepotType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
+            $unique = uniqid();
         
-            // Assigner les valeurs du formulaire à l'entité Client
+            // Créer un objet Client et l'assigner avec les données du formulaire
+            $client = new Client();
             $client->setFirstName($data['first_name']);
             $client->setLastName($data['last_name']);
             $client->setEmail($data['email']);
-            $client->settrackingNumber(uniqid());
+            $client->setTrackingNumber($unique);
             $client->setDeposit($deposit);
+            
+            // Créer un objet DeviceMaintenance
+            $deviceMaintenance = new DeviceMaintenance();
+            $deviceMaintenance->setTrackingNumber($unique); // Associer l'objet Client au DeviceMaintenance
         
-            $entityManager->persist($client);
+            // Assigner les autres données du formulaire à DeviceMaintenance
+            $deviceMaintenance->setCurrentStep($data['currentStep'] ?? 0);
+            $deviceMaintenance->setScreen($data['screen'] ?? 0);
+            $deviceMaintenance->setOxidationStatus($data['oxidationStatus'] ?? 0);
+            $deviceMaintenance->setHinges($data['hinges'] ?? 0);
+            $deviceMaintenance->setFan($data['fan'] ?? 0);
+            $deviceMaintenance->setButton($data['button'] ?? 0);
+            $deviceMaintenance->setSensors($data['sensors'] ?? 0);
+            $deviceMaintenance->setChassis($data['chassis'] ?? 0);
+            $deviceMaintenance->setDataWipe($data['dataWipe'] ?? 0);
+            $deviceMaintenance->setComputerUnlock($data['computerUnlock'] ?? 0);
+            $deviceMaintenance->setDriver($data['driver'] ?? 0);
+            $deviceMaintenance->setComputerUpdate($data['computerUpdate'] ?? 0);
+            $deviceMaintenance->setMotherboard($data['motherboard'] ?? 0);
+            $deviceMaintenance->setNetworks($data['networks'] ?? 0);
+            $deviceMaintenance->setComponents($data['components'] ?? 0);
+            $deviceMaintenance->setBattery($data['battery'] ?? 0);
+            $deviceMaintenance->setPowerSupply($data['powerSupply'] ?? 0);
+        
+            // Persist entities
+            $entityManager->persist($client);  // Persister l'objet Client
+            $entityManager->persist($deviceMaintenance);  // Persister l'objet DeviceMaintenance
             $entityManager->flush();
         }
         

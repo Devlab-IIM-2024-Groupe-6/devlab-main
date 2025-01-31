@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Certificat de reconditionnement - {{ trackingNumber }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 100%; max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 24px; font-weight: bold; }
+        h2 { font-size: 20px; font-weight: bold; }
+        p { font-size: 16px; }
+        ul { list-style-type: disc; padding-left: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Certificat de reconditionnement</h1>
+        <div>
+            <h2>Détails de la Maintenance</h2>
+            <p><strong>Client:</strong> {{ client.firstname }} {{ client.lastname }}</p>
+            <p><strong>Numéro de suivi:</strong> {{ trackingNumber }}</p>
+
+            {% if deviceMaintenance %}
+                <p><strong>État de la Maintenance:</strong> Étape actuelle: {{ deviceMaintenance.currentStep }}</p>
+                <h3>Points de contrôle:</h3>
+                <ul>
+                    <li>Écran: {{ deviceMaintenance.screen ? 'OK' : 'NO VALID' }}</li>
+                    <li>État d'oxydation: {{ deviceMaintenance.oxidationStatus ? 'OK' : 'NO VALID' }}</li>
+                    <li>Charnières: {{ deviceMaintenance.hinges ? 'OK' : 'NO VALID' }}</li>
+                    <li>Ventilateur: {{ deviceMaintenance.fan ? 'OK' : 'NO VALID' }}</li>
+                    <li>Boutons: {{ deviceMaintenance.button ? 'OK' : 'NO VALID' }}</li>
+                    <li>Capteurs: {{ deviceMaintenance.sensors ? 'OK' : 'NO VALID' }}</li>
+                    <li>Châssis: {{ deviceMaintenance.chassis ? 'OK' : 'NO VALID' }}</li>
+                    <li>Effacement des données: {{ deviceMaintenance.dataWipe ? 'OK' : 'NO VALID' }}</li>
+                    <li>Déverrouillage: {{ deviceMaintenance.computerUnlock ? 'OK' : 'NO VALID' }}</li>
+                    <li>Pilotes: {{ deviceMaintenance.driver ? 'OK' : 'NO VALID' }}</li>
+                    <li>Mise à jour: {{ deviceMaintenance.computerUpdate ? 'OK' : 'NO VALID' }}</li>
+                    <li>Carte mère: {{ deviceMaintenance.motherboard ? 'OK' : 'NO VALID' }}</li>
+                    <li>Réseaux: {{ deviceMaintenance.networks ? 'OK' : 'NO VALID' }}</li>
+                    <li>Composants: {{ deviceMaintenance.components ? 'OK' : 'NO VALID' }}</li>
+                    <li>Batterie: {{ deviceMaintenance.battery ? 'OK' : 'NO VALID' }}</li>
+                    <li>Alimentation: {{ deviceMaintenance.powerSupply ? 'OK' : 'NO VALID' }}</li>
+                </ul>
+            {% else %}
+                <p>La maintenance a été validée avec succès.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Code-barres - {{ trackingNumber }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 100%; max-width: 800px; margin: 0 auto; text-align: center; }
+        h1 { font-size: 24px; font-weight: bold; }
+        img { max-width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Code-barres pour le numéro de suivi : {{ trackingNumber }}</h1>
+        <img src="{{ barcode }}" alt="Code-barres">
+        <p><strong>Client:</strong> {{ client.firstname }} {{ client.lastname }}</p>
+        <p><strong>Dépôt:</strong> {{ deposit }}</p>
+    </div>
+</body>
+</html>

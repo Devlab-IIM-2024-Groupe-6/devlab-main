@@ -187,7 +187,12 @@ class IndexController extends AbstractController
         return $response;
     }
 
-    #[Route('/{any}', name: 'not_found', requirements: ['any' => '.*'])]
+    #[Route('/{any}', 
+        name: 'not_found', 
+        requirements: [
+            'any' => '^(?!.*(login|logout|admin)).*$'
+        ]
+    )]
     public function notFound(): Response
     {
         return $this->render('bundles/TwigBundle/Exception/404.html.twig', [], new Response('', 404));

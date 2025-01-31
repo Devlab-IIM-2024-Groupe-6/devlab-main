@@ -41,6 +41,11 @@
 				</div>
 			</div>
 		</section>
+
+
+        <!-- Timeline -->
+        {% include 'Timeline.html.twig' %}
+
 		{% if hasResult %}
 			{% if trackingNumber %}
 				<p>Numéro de suivi : {{ trackingNumber }}</p>
@@ -50,5 +55,6 @@
 				{% endif %}
 			{% endif %}
 		{% endif %}
+
 	</div>
 {% endblock %}

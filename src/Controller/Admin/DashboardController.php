@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Client;
 use App\Entity\Deposit;
 use App\Entity\DeviceMaintenance;
 use App\Entity\User;
@@ -45,7 +44,6 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToCrud('User', 'fa fa-user', User::class);
-        yield MenuItem::linkToCrud('Client', 'fa fa-face-smile', Client::class);
         yield MenuItem::linkToCrud('Deposit', 'fa fa-home', Deposit::class);
         yield MenuItem::linkToCrud('Device maintenance', 'fa fa-laptop', DeviceMaintenance::class);
     }

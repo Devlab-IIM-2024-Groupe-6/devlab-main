@@ -56,10 +56,9 @@ class Client
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -68,10 +67,9 @@ class Client
         return $this->firstname;
     }
 
-    public function setFirstname(string $firstname): static
+    public function setFirstname(string $firstname): self
     {
         $this->firstname = $firstname;
-
         return $this;
     }
 
@@ -80,10 +78,9 @@ class Client
         return $this->lastname;
     }
 
-    public function setLastname(string $lastname): static
+    public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
-
         return $this;
     }
 
@@ -92,10 +89,9 @@ class Client
         return $this->trackingNumber;
     }
 
-    public function setTrackingNumber(string $trackingNumber): static
+    public function setTrackingNumber(string $trackingNumber): self
     {
         $this->trackingNumber = $trackingNumber;
-
         return $this;
     }
 
@@ -104,24 +100,10 @@ class Client
         return $this->deposit;
     }
 
-    public function setDeposit(?Deposit $deposit): static
+    public function setDeposit(?Deposit $deposit): self
     {
         $this->deposit = $deposit;
-
         return $this;
-    }
-
-    #[ORM\PrePersist]
-    public function generateTrackingNumber(): void
-    {
-        if (empty($this->trackingNumber)) {
-            $this->trackingNumber = $this->generateRandomTrackingNumber();
-        }
-    }
-
-    private function generateRandomTrackingNumber(): string
-    {
-        return strtoupper(bin2hex(random_bytes(4))) . '-' . random_int(1000, 9999);
     }
 
     /**
@@ -132,17 +114,17 @@ class Client
         return $this->deviceMaintenances;
     }
 
-    public function addDeviceMaintenance(DeviceMaintenance $deviceMaintenance): static
+    public function addDeviceMaintenance(DeviceMaintenance $deviceMaintenance): self
     {
         if (!$this->deviceMaintenances->contains($deviceMaintenance)) {
-            $this->deviceMaintenances->add($deviceMaintenance);
+            $this->deviceMaintenances[] = $deviceMaintenance;
             $deviceMaintenance->setTrackingNumber($this);
         }
 
         return $this;
     }
 
-    public function removeDeviceMaintenance(DeviceMaintenance $deviceMaintenance): static
+    public function removeDeviceMaintenance(DeviceMaintenance $deviceMaintenance): self
     {
         if ($this->deviceMaintenances->removeElement($deviceMaintenance)) {
             // set the owning side to null (unless already changed)

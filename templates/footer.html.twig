@@ -7,7 +7,13 @@
         <a href="#" class="link link-hover">About</a>
         <a href="#" class="link link-hover">Sitemap</a>
         <a href="#" class="link link-hover">Contents</a>
-        <a href="{{ path('admin', [], relative = false) }}" class="link link-hover">Espace Admin</a>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin') }}" class="link link-hover">Espace Admin</a>
+        {% elseif is_granted('ROLE_ADMIN_POINT_DEPOT') %}
+            <a href="{{ path('admin_point_depot') }}" class="link link-hover">Espace Admin - Point Dépôt</a>
+        {% elseif is_granted('ROLE_ADMIN_EMMAUS') %}
+            <a href="{{ path('admin_emmaus') }}" class="link link-hover">Espace Admin - Emmaüs</a>
+        {% endif %}
     </nav>
 
     <!-- Section Social -->

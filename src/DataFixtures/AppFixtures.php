@@ -80,32 +80,25 @@ class AppFixtures extends Fixture
         $manager->persist($deviceMaintenance);
 
         // 5) Création des 5 étapes de maintenance, avec l'ordre
-        $step0 = new MaintenanceStep();
-        $step0->setName('Dépôt du formulaire');
-        $step0->setStepOrder(0);
-        $manager->persist($step0);
-
         $step1 = new MaintenanceStep();
-        $step1->setName('Dépôt du matériel');
+        $step1->setName('Dépôt du formulaire');
         $step1->setStepOrder(1);
         $manager->persist($step1);
 
         $step2 = new MaintenanceStep();
-        $step2->setName('Remise en forme du matériel');
+        $step2->setName('Envoi vers Emmaüs');
         $step2->setStepOrder(2);
         $manager->persist($step2);
 
         $step3 = new MaintenanceStep();
-        $step3->setName('Envoi vers Emmaüs');
+        $step3->setName('Réception par Emmaüs');
         $step3->setStepOrder(3);
         $manager->persist($step3);
 
         $step4 = new MaintenanceStep();
-        $step4->setName('Réception par Emmaüs');
+        $step4->setName('Remise à zéro du matériel');
         $step4->setStepOrder(4);
         $manager->persist($step4);
-
-        
 
         $step5 = new MaintenanceStep();
         $step5->setName('Envoi final au client');
@@ -113,18 +106,10 @@ class AppFixtures extends Fixture
         $manager->persist($step5);
 
         // 6) Création des logs de maintenance (un par étape)
-        $log0 = new DeviceMaintenanceLog();
-        $log0->setDeviceMaintenance($deviceMaintenance);
-        $log0->setCurrentStep($step0);
-        $log0->setNextStep($step1);
-        $log0->setChangedAt(new \DateTime());
-        $manager->persist($log0);
-
         $log1 = new DeviceMaintenanceLog();
         $log1->setDeviceMaintenance($deviceMaintenance);
-        $log1->setPreviousStep($step0);
         $log1->setNextStep($step2);
-        $log1->setCurrentStep($step1);        
+        $log1->setCurrentStep($step1);   
         $log1->setChangedAt(new \DateTime());
         $manager->persist($log1);
 

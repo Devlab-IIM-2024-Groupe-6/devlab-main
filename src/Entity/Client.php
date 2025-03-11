@@ -29,17 +29,17 @@ class Client
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 255, unique: true)]
-    private ?string $trackingNumber = null;
+    // #[ORM\Column(length: 255, unique: true)]
+    // private ?string $trackingNumber = null;
 
-    #[ORM\ManyToOne(inversedBy: 'clients')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Deposit $deposit = null;
+    // #[ORM\ManyToOne(inversedBy: 'clients')]
+    // #[ORM\JoinColumn(nullable: false)]
+    // private ?Deposit $deposit = null;
 
     /**
      * @var Collection<int, DeviceMaintenance>
      */
-    #[ORM\OneToMany(targetEntity: DeviceMaintenance::class, mappedBy: 'trackingNumber', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: DeviceMaintenance::class, mappedBy: 'client', cascade: ['persist'])]
     private Collection $deviceMaintenances;
 
     public function __construct()
@@ -85,35 +85,35 @@ class Client
         return $this;
     }
 
-    #[ORM\PrePersist]
-    public function generateTrackingNumber(): void
-    {
-        if (!$this->trackingNumber) {
-            $this->trackingNumber = strtoupper(Uuid::v4()); // Génère un UUID unique
-        }
-    }
+    // #[ORM\PrePersist]
+    // public function generateTrackingNumber(): void
+    // {
+    //     if (!$this->trackingNumber) {
+    //         $this->trackingNumber = strtoupper(Uuid::v4()); // Génère un UUID unique
+    //     }
+    // }
 
-    public function getTrackingNumber(): ?string
-    {
-        return $this->trackingNumber;
-    }
+    // public function getTrackingNumber(): ?string
+    // {
+    //     return $this->trackingNumber;
+    // }
 
-    public function setTrackingNumber(string $trackingNumber): self
-    {
-        $this->trackingNumber = $trackingNumber;
-        return $this;
-    }
+    // public function setTrackingNumber(string $trackingNumber): self
+    // {
+    //     $this->trackingNumber = $trackingNumber;
+    //     return $this;
+    // }
 
-    public function getDeposit(): ?Deposit
-    {
-        return $this->deposit;
-    }
+    // public function getDeposit(): ?Deposit
+    // {
+    //     return $this->deposit;
+    // }
 
-    public function setDeposit(?Deposit $deposit): self
-    {
-        $this->deposit = $deposit;
-        return $this;
-    }
+    // public function setDeposit(?Deposit $deposit): self
+    // {
+    //     $this->deposit = $deposit;
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, DeviceMaintenance>
@@ -123,25 +123,32 @@ class Client
         return $this->deviceMaintenances;
     }
 
-    public function addDeviceMaintenance(DeviceMaintenance $deviceMaintenance): self
+    public function addDeviceMaintenance(DeviceMaintenance $deviceMaintenance): static
     {
         if (!$this->deviceMaintenances->contains($deviceMaintenance)) {
-            $this->deviceMaintenances[] = $deviceMaintenance;
-            $deviceMaintenance->setTrackingNumber($this);
+            $this->deviceMaintenances->add($deviceMaintenance);
+            $deviceMaintenance->setClient($this);
         }
-
         return $this;
     }
 
-    public function removeDeviceMaintenance(DeviceMaintenance $deviceMaintenance): self
+    public function removeDeviceMaintenance(DeviceMaintenance $deviceMaintenance): static
     {
         if ($this->deviceMaintenances->removeElement($deviceMaintenance)) {
-            // set the owning side to null (unless already changed)
-            if ($deviceMaintenance->getTrackingNumber() === $this) {
-                $deviceMaintenance->setTrackingNumber(null);
+            if ($deviceMaintenance->getClient() === $this) {
+                $deviceMaintenance->setClient(null);
             }
         }
-
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf(
+            '%s %s (%s)',
+            $this->firstname,
+            $this->lastname,
+            $this->email
+        );
     }
 }

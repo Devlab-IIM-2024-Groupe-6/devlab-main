@@ -5,7 +5,9 @@ namespace App\Controller;
 
 use App\Entity\Client;
 use App\Entity\DeviceMaintenance;
+use App\Form\TrackingFormType;
 use App\Service\BarcodeGeneratorService;
+use App\Service\DeviceMaintenance\TrackingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,64 +29,38 @@ class IndexController extends AbstractController
         return $this->render('index/index.html.twig');
     }
 
-    #[Route('/suivi', name: 'tracking', methods: ['GET', 'POST'])]
-    public function tracking(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/suivi/{trackingNumber}', name: 'tracking', methods: ['GET', 'POST'], defaults: ['trackingNumber' => null])]
+    public function tracking(?string $trackingNumber, Request $request, EntityManagerInterface $em, TrackingService $trackingService): Response
     {
-        if ($request->isMethod('POST')) {
-            $trackingNumber = $request->request->get('tracking_number');
-            
-            $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+        $form = $this->createForm(TrackingFormType::class);
+        $form->handleRequest($request);
     
-            if ($client) {
-                return $this->redirectToRoute('trackingId', ['trackingNumber' => $trackingNumber]);
+        // Gestion du formulaire
+        if ($form->isSubmitted() && $form->isValid()) {
+            $trackingNumber = $form->getData()['tracking_number'];
+            
+            if ($trackingService->validateTrackingNumber($trackingNumber)) {
+                return $this->redirectToRoute('tracking', ['trackingNumber' => $trackingNumber]);
             }
-
+    
             $this->addFlash('error', 'Numéro de suivi invalide ou introuvable.');
+            return $this->redirectToRoute('tracking');
+        }
+    
+        // Gestion de l'affichage des résultats
+        $result = $trackingNumber ? $trackingService->getTrackingResult($trackingNumber) : null;
+
+        if ($trackingNumber && !$result) {
+            throw $this->createNotFoundException("Client ou utilisateur introuvable.");
         }
     
         return $this->render('tracking.html.twig', [
-            'title' => 'Suivi de mon dépôt',
-            'hasResult' => false
+            'form' => $form->createView(),
+            'result' => $result,
+            'trackingNumber' => $trackingNumber
         ]);
     }
-
-    #[Route('/suivi/{trackingNumber}', name: 'trackingId', methods: ['GET', 'POST'])]
-    public function trackingId(string $trackingNumber, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        if ($request->isMethod('POST')) {
-            $trackingNumber = $request->request->get('tracking_number');
-            
-            $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
     
-            if ($client) {
-                return $this->redirectToRoute('trackingId', ['trackingNumber' => $trackingNumber]);
-            }
-
-            $this->addFlash('error', 'Numéro de suivi invalide ou introuvable.');
-            return $this->render('tracking.html.twig', [
-                'title' => 'Suivi de mon dépôt',
-                'hasResult' => false
-            ]);
-        }
-
-        $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
-
-        if (!$client) {
-            return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
-                'message' => "Client ou utilisateur introuvable."
-            ], new Response('', 404));
-        }
-
-        $deposit = $client->getDeposit();
-
-        return $this->render('tracking.html.twig', [
-            'title' => 'Suivi de mon dépôt',
-            'hasResult' => true,
-            'trackingNumber' => $trackingNumber,
-            'deposit' => $deposit,
-            'client' => $client
-        ]);
-    }
 
     #[Route('/wiki', name: 'wiki')]
     public function wiki(): Response
@@ -97,8 +73,8 @@ class IndexController extends AbstractController
     #[Route('/barcode/{trackingNumber}', name: 'client_barcode')]
     public function generateClientBarcode(string $trackingNumber, EntityManagerInterface $entityManager): Response
     {
-        $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
-
+        $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+        $client = $deviceMaintenance->getClient();
         if (!$client) {
             return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
                 'message' => 'Client introuvable'
@@ -110,10 +86,10 @@ class IndexController extends AbstractController
                 'message' => "Le client n'a pas de numéro de suivi."
             ], new Response('', 404));
         }
-    
+
         $barcode = $this->barcodeGenerator->generateBarcode($trackingNumber);
-    
-        $deposit = $client->getDeposit();
+
+        $deposit = $deviceMaintenance->getDeposit();
 
         return $this->render('barcode/barcode.html.twig', [
             'client' => $client,
@@ -126,16 +102,17 @@ class IndexController extends AbstractController
     #[Route('/certificate/{trackingNumber}', name: 'client_certificate')]
     public function generateCertificate(string $trackingNumber, EntityManagerInterface $entityManager): Response
     {
-        $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
-    
+        $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+        $client = $deviceMaintenance->getClient();
+
         if (!$client) {
             return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
                 'message' => 'Client introuvable'
             ], new Response('', 404));
         }
-    
-        $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $client]);
-    
+
+        // $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $client]);
+
         return $this->render('certificate/certificate.html.twig', [
             'client' => $client,
             'deviceMaintenance' => $deviceMaintenance,
@@ -146,7 +123,10 @@ class IndexController extends AbstractController
     #[Route('/download/{type}/{trackingNumber}', name: 'download_pdf')]
     public function downloadPdf(string $type, string $trackingNumber, EntityManagerInterface $entityManager): Response
     {
-        $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+        // /download/barcode/6C8C024B-5B68-4801-9DE1-5438C23A8E49
+        // $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+        $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $trackingNumber]);
+        $client = $deviceMaintenance->getClient();
 
         if (!$client) {
             return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
@@ -159,10 +139,9 @@ class IndexController extends AbstractController
                 'client' => $client,
                 'trackingNumber' => $trackingNumber,
                 'barcode' => $this->barcodeGenerator->generateBarcode($trackingNumber),
-                'deposit' => $client->getDeposit(),
+                'deposit' => $deviceMaintenance->getDeposit(),
             ]);
         } elseif ($type === 'certificate') {
-            $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $client]);
 
             $html = $this->renderView('certificate/certificate_pdf.html.twig', [
                 'client' => $client,
@@ -187,8 +166,9 @@ class IndexController extends AbstractController
         return $response;
     }
 
-    #[Route('/{any}', 
-        name: 'not_found', 
+    #[Route(
+        '/{any}',
+        name: 'not_found',
         requirements: [
             'any' => '^(?!.*(login|logout|admin)).*$'
         ]

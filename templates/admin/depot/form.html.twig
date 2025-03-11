@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<div
+		class="container mx-auto p-4" {{ stimulus_controller('device-maintenance') }}>
+		<!-- Formulaire création -->
+		{{ form_start(form) }}
+		<div
+			class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+			<!-- Champs client -->
+			<div class="space-y-2">
+				{{ form_row(form.email) }}
+				{{ form_row(form.first_name) }}
+				{{ form_row(form.last_name) }}
+			</div>
+
+			<!-- Champs device -->
+			{# <div class="space-y-2">
+							{{ form_row(form.screen) }}
+							{{ form_row(form.oxidationStatus) }}
+							<!-- ... autres champs ... -->
+						</div> #}
+		</div>
+		<button type="submit" class="btn btn-primary">Créer</button>
+		{{ form_end(form) }}
+
+		<!-- Liste des devices -->
+		<div class="space-y-4 mt-8">
+			{% for device in devices %}
+				<div class="card bg-base-100 shadow-xl" {{ stimulus_target('device-maintenance', 'device') }} data-device-id="{{ device.id }}">
+					<div class="card-body">
+						<div class="flex justify-between items-center">
+							<h3 class="card-title">{{ device.client.firstName }}</h3>
+
+							<div
+								class="flex gap-2 items-center">
+								<!-- Boutons étapes -->
+								<button class="btn btn-circle btn-sm btn-ghost" data-action="click->device-maintenance#toggleStep" data-step="2">
+									<img src="{{ asset('icons/check.svg') }}" alt="Step 2" class="h-5 w-5">
+								</button>
+
+								<button class="btn btn-circle btn-sm btn-ghost" data-action="click->device-maintenance#toggleStep" data-step="3">
+									<img src="{{ asset('icons/check.svg') }}" alt="Step 3" class="h-5 w-5">
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\DeviceMaintenance;
+use App\Entity\DeviceMaintenanceLog;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<DeviceMaintenance>
+ * @extends ServiceEntityRepository<DeviceMaintenanceLog>
  */
-class DeviceMaintenanceRepository extends ServiceEntityRepository
+class DeviceMaintenanceLogRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, DeviceMaintenance::class);
+        parent::__construct($registry, DeviceMaintenanceLog::class);
     }
 
     //    /**
-    //     * @return DeviceMaintenance[] Returns an array of DeviceMaintenance objects
+    //     * @return DeviceMaintenanceLog[] Returns an array of DeviceMaintenanceLog objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class DeviceMaintenanceRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?DeviceMaintenance
+    //    public function findOneBySomeField($value): ?DeviceMaintenanceLog
     //    {
     //        return $this->createQueryBuilder('d')
     //            ->andWhere('d.exampleField = :val')
@@ -40,5 +40,4 @@ class DeviceMaintenanceRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-
 }

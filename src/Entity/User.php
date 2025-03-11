@@ -143,7 +143,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\PrePersist]
+    // #[ORM\PrePersist]
     public function generateTrackingNumber(): void
     {
         if (empty($this->trackingNumber)) {

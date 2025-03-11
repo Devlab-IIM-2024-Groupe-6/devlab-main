@@ -2,43 +2,42 @@
 
 namespace App\Repository;
 
-use App\Entity\DeviceMaintenance;
+use App\Entity\MaintenanceStep;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<DeviceMaintenance>
+ * @extends ServiceEntityRepository<MaintenanceStep>
  */
-class DeviceMaintenanceRepository extends ServiceEntityRepository
+class MaintenanceStepRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, DeviceMaintenance::class);
+        parent::__construct($registry, MaintenanceStep::class);
     }
 
     //    /**
-    //     * @return DeviceMaintenance[] Returns an array of DeviceMaintenance objects
+    //     * @return MaintenanceStep[] Returns an array of MaintenanceStep objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
+    //        return $this->createQueryBuilder('m')
+    //            ->andWhere('m.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
+    //            ->orderBy('m.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?DeviceMaintenance
+    //    public function findOneBySomeField($value): ?MaintenanceStep
     //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
+    //        return $this->createQueryBuilder('m')
+    //            ->andWhere('m.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()
     //        ;
     //    }
-
 }

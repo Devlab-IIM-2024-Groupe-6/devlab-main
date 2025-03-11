@@ -26,6 +26,7 @@
         "symfony/yaml": "6.4.*",
         "symfonycasts/tailwind-bundle": "^0.6.1",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/intl-extra": "^3.20",
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
@@ -40,7 +41,8 @@
             "symfony/flex": true,
             "symfony/runtime": true
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "process-timeout": 1000
     },
     "autoload": {
         "psr-4": {

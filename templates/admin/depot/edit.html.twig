@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la Maintenance{% endblock %}
+
+{% block body %}
+<div class="container mx-auto p-6 max-w-2xl">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-3xl text-center font-bold mb-4">
+                Modifier la Maintenance 
+                <span class="badge badge-primary">#{{ deviceMaintenance.id }}</span>
+            </h2>
+
+            <div class="divider"></div> <!-- Ligne de séparation -->
+
+            {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+
+            {% for field in form %}
+    {% if field.vars.name != '_token' %} {# Cache le champ token #}
+        <div class="form-control">
+            <label class="label">
+                <span class="label-text font-semibold">{{ field.vars.label|default(field.vars.name|capitalize) }}</span>
+            </label>
+
+            {% if field.vars.block_prefixes|last == 'checkbox' or field.vars.widget == 'checkbox' %}
+                <label class="cursor-pointer flex items-center gap-3">
+                    {{ form_widget(field, {'attr': {'class': 'toggle toggle-primary'}}) }}
+                    <span class="text-sm">{{ field.vars.label }}</span>
+                </label>
+            {% else %}
+                {{ form_widget(field, {'attr': {'class': 'input input-bordered w-full'}}) }}
+            {% endif %}
+
+            {% if field.vars.errors|length > 0 %}
+                <p class="text-error text-sm mt-1">{{ field_errors(field) }}</p>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endfor %}
+
+
+            <div class="divider"></div> <!-- Ligne de séparation -->
+
+            <div class="flex gap-4 mt-6">
+                <a href="{{ path('depot_admin_index') }}" class="btn btn-outline btn-wide flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l-5-5m0 0l5-5m-5 5h14" />
+                    </svg>
+                    Retour
+                </a>
+
+                <button type="submit" class="btn btn-primary btn-wide flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Enregistrer
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

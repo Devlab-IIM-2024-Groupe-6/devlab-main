@@ -1,60 +1,61 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Suivi de mon dépôt
-{% endblock %}
+{% block title %}Suivi de mon dépôt{% endblock %}
 
 {% block body %}
-	<div
-		class="container mx-auto my-10 px-6 lg:px-20">
-		<!-- Header -->
-		<header class="text-center mb-8">
-			<h1 class="text-4xl font-bold text-primary">Suivi de votre dépôt</h1>
-			<p class="text-gray-600 mt-2">
-				Entrez votre numéro de suivi pour connaître l'état de votre dépôt.
-			</p>
-		</header>
+<div class="container mx-auto my-10 px-6 lg:px-20">
+    <header class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-primary">Suivi de votre dépôt</h1>
+        <p class="text-gray-600 mt-2">
+            Entrez votre numéro de suivi pour connaître l'état de votre dépôt.
+        </p>
+    </header>
 
-		<!-- Formulaire de suivi -->
-		<section>
-			<form action="#" method="post" class="bg-base-100 shadow-md rounded-lg p-6 space-y-4">
-				<div class="form-control">
-					<label for="tracking-number" class="label">
-						<span class="label-text">Numéro de suivi :</span>
-					</label>
-					<input type="text" id="tracking-number" name="tracking_number" class="input input-bordered w-full" placeholder="Ex : 12345-ABCDE" required>
-				</div>
-				<button type="submit" class="btn btn-primary w-full">Vérifier</button>
-			</form>
-		</section>
-		{% for message in app.flashes('error') %}
-		<div class="alert bg-red-100 border-l-3 border-red-500 text-red-700 shadow-lg mt-4 p-4 rounded-lg">
-			<span>{{ message }}</span>
-		</div>
-		
-		{% endfor %}
-		<!-- Résultat du suivi -->
-		<section class="mt-6 hidden" id="tracking-result">
+    {{ form_start(form, {'attr': {'class': 'bg-base-100 shadow-md rounded-lg p-6 space-y-4'}}) }}
+        {{ form_row(form.tracking_number, {
+            'label': 'Numéro de suivi :',
+            'row_attr': {'class': 'form-control'},
+            'label_attr': {'class': 'label'},
+            'attr': {'class': 'input input-bordered w-full'}
+        }) }}
+        
+        {{ form_row(form.submit, {'attr': {'class': 'btn btn-primary w-full'}}) }}
+    {{ form_end(form) }}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert bg-red-100 border-l-3 border-red-500 text-red-700 shadow-lg mt-4 p-4 rounded-lg">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% if result %}
+        <section class="mt-8 space-y-4">
+            
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold mb-4">Informations du client</h2>
+                <p class="mb-2"><span class="font-bold">Nom :</span> {{ result.client.firstname }} {{ result.client.lastname }}</p>
+                {% if result.deposit %}
+                    <p class="mb-2"><span class="font-bold">Point de dépôt :</span> {{ result.deposit.name }}</p>
+                {% endif %}
+                <p class="mb-2"><span class="font-bold">Numéro de suivi :</span> {{ trackingNumber }}</p>
+            </div>
 			<div class="alert alert-info shadow-lg">
 				<div>
 					<span class="font-bold">Statut :</span>
-					<span>Votre dépôt est en cours de traitement.</span>
+					<span>
+						{% if result.currentStep %}
+							{{ result.currentStep.name }} 
+							(depuis le {{ result.latestLog.changedAt|format_datetime('short', 'none',locale: 'fr') }})
+						{% else %}
+							En attente de traitement initial
+						{% endif %}
+					</span>
 				</div>
 			</div>
-		</section>
 
-
-        <!-- Timeline -->
-        {% include 'Timeline.html.twig' %}
-
-		{% if hasResult %}
-			{% if trackingNumber %}
-				<p>Numéro de suivi : {{ trackingNumber }}</p>
-				{% if deposit and client %}
-					<h1>Code-barres pour {{ client.firstname }} {{ client.lastname }}</h1>
-					<div>Point de dépôt : {{ deposit.name }}</div>
-				{% endif %}
-			{% endif %}
-		{% endif %}
-
-	</div>
+            {% include 'Timeline.html.twig' %}
+        </section>
+    {% endif %}
+</div>
 {% endblock %}

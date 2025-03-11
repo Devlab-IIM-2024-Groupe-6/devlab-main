@@ -19,7 +19,7 @@
                     <a href="{{ path('wiki') }}">Wiki</a>
                 </li>
                 <li>
-                    <a href="{{ path('depot_form', { id: 1 }) }}">Déposer un matériel</a>
+                    <a href="{{ path('depot_form', { id: last_depot_id() }) }}">Déposer un matériel</a>
                 </li>
             </ul>
         </div>
@@ -29,7 +29,7 @@
     <div class="navbar-center hidden lg:flex">
         <ul class="links-list flex items-center gap-8 px-1 text-darkblue">
 			<li>
-                <a href="{{ path('depot_form', { id: 1 }) }}" class="nav-link">Donner mon appareil</a>
+                <a href="{{ path('depot_form', { id: last_depot_id() }) }}" class="nav-link">Donner mon appareil</a>
             </li>
             <li>
                 <a href="{{ path('wiki') }}" class="nav-link">Résolution de problèmes</a>
@@ -38,7 +38,7 @@
                 <a href="{{ path('tracking') }}" class="nav-link">Suivis</a>
             </li>
 			<li>
-				<a href="{{ path('depot_form', { id: 1 }) }}" class="nav-link">Dépôts</a>
+				<a href="{{ path('depot_form', { id: last_depot_id() }) }}" class="nav-link">Dépôts</a>
 			</li>
         </ul>
     </div>

@@ -298,7 +298,7 @@ class DeviceMaintenance
     public function generateTrackingNumber(): void
     {
         if (!$this->trackingNumber) {
-            $this->trackingNumber = strtoupper(Uuid::v4());
+            $this->trackingNumber = strtoupper(bin2hex(random_bytes(4))) . '-' . random_int(1000, 9999);
         }
     }
 

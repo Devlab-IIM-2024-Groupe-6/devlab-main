@@ -37,32 +37,28 @@ class ClientCrudController extends AbstractCrudController
             TextField::new('email'),
             TextField::new('firstname'),
             TextField::new('lastname'),
-            TextField::new('tracking_number')->hideOnForm(),
-            AssociationField::new('deposit')
-                ->setRequired(true)
-                ->setFormTypeOption('attr', ['required' => 'required']),
         ];
     }
 
-    public function createIndexQueryBuilder(
-        SearchDto $searchDto,
-        EntityDto $entityDto,
-        FieldCollection $fields,
-        FilterCollection $filters
-    ): QueryBuilder {
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
+    // public function createIndexQueryBuilder(
+    //     SearchDto $searchDto,
+    //     EntityDto $entityDto,
+    //     FieldCollection $fields,
+    //     FilterCollection $filters
+    // ): QueryBuilder {
+    //     /** @var \App\Entity\User $user */
+    //     $user = $this->getUser();
 
-        if (!$user || !$user->getDeposit()) {
-            throw new AccessDeniedException("Vous n'êtes pas affilié à un point de dépôt.");
-        }
+    //     if (!$user || !$user->getDeposit()) {
+    //         throw new AccessDeniedException("Vous n'êtes pas affilié à un point de dépôt.");
+    //     }
 
-        // Filtrer les clients pour ne montrer que ceux du dépôt de l'utilisateur connecté
-        $queryBuilder = $this->entityManager->getRepository(Client::class)
-            ->createQueryBuilder('c')
-            ->where('c.deposit = :deposit')
-            ->setParameter('deposit', $user->getDeposit());
+    //     // Filtrer les clients pour ne montrer que ceux du dépôt de l'utilisateur connecté
+    //     $queryBuilder = $this->entityManager->getRepository(Client::class)
+    //         ->createQueryBuilder('c')
+    //         ->where('c.deposit = :deposit')
+    //         ->setParameter('deposit', $user->getDeposit());
 
-        return $queryBuilder;
-    }
+    //     return $queryBuilder;
+    // }
 }

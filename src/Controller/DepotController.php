@@ -12,11 +12,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Client;
 use App\Entity\DeviceMaintenance;
+use App\Service\Client\ClientService;
+use App\Service\DeviceMaintenance\DeviceMaintenanceWorkflowService;
 
 class DepotController extends AbstractController
 {
     #[Route('/depot/{id}', name: 'depot_form')]
-    public function depot(Request $request, int $id, EntityManagerInterface $entityManager): Response
+    public function depot(Request $request, int $id, EntityManagerInterface $entityManager, ClientService $clientService, DeviceMaintenanceWorkflowService $DMWfS): Response
     {
         $deposit = $entityManager->getRepository(Deposit::class)->find($id);
 
@@ -26,30 +28,18 @@ class DepotController extends AbstractController
             ], new Response('', 404));
         }
 
-        $client = new Client();
-        $deviceMaintenance = new DeviceMaintenance();
-
         $form = $this->createForm(DepotType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $unique = uniqid();
-        
-            // Créer un objet Client et l'assigner avec les données du formulaire
-            $client = new Client();
-            $client->setFirstName($data['first_name']);
-            $client->setLastName($data['last_name']);
-            $client->setEmail($data['email']);
-            $client->setTrackingNumber($unique);
-            $client->setDeposit($deposit);
-            
             // Créer un objet DeviceMaintenance
             $deviceMaintenance = new DeviceMaintenance();
-            $deviceMaintenance->setTrackingNumber($unique); // Associer l'objet Client au DeviceMaintenance
-        
+
             // Assigner les autres données du formulaire à DeviceMaintenance
-            $deviceMaintenance->setCurrentStep($data['currentStep'] ?? 0);
+            // $deviceMaintenance->setCurrentStep($data['currentStep'] ?? 0);
+            // dd($data);
+            $deviceMaintenance->setDeposit($deposit);
             $deviceMaintenance->setScreen($data['screen'] ?? 0);
             $deviceMaintenance->setOxidationStatus($data['oxidationStatus'] ?? 0);
             $deviceMaintenance->setHinges($data['hinges'] ?? 0);
@@ -66,16 +56,21 @@ class DepotController extends AbstractController
             $deviceMaintenance->setComponents($data['components'] ?? 0);
             $deviceMaintenance->setBattery($data['battery'] ?? 0);
             $deviceMaintenance->setPowerSupply($data['powerSupply'] ?? 0);
-        
-            // Persist entities
-            $entityManager->persist($client);  // Persister l'objet Client
-            $entityManager->persist($deviceMaintenance);  // Persister l'objet DeviceMaintenance
+
+            $client = $clientService->getOrCreateClient(
+                $data['email'],
+                $data['first_name'],
+                $data['last_name']
+            );
+            $client->addDeviceMaintenance($deviceMaintenance);
+            $log = $DMWfS->createInitialLog($deviceMaintenance);
+            // dd($client,$deviceMaintenance);
+            $entityManager->persist($client);
             $entityManager->flush();
         }
-        
 
         return $this->render('depot/form.html.twig', [
-            'form' => $form->createView(), // Assurez-vous de passer la vue du formulaire
+            'form' => $form->createView(),
             'locationName' => $deposit->getName(),
             'id' => $id,
         ]);
@@ -88,9 +83,9 @@ class DepotController extends AbstractController
         $deposits = $entityManager->getRepository(Deposit::class)->findAll();
 
         if ($searchQuery) {
-            $deposits = array_filter($deposits, function($deposit) use ($searchQuery) {
+            $deposits = array_filter($deposits, function ($deposit) use ($searchQuery) {
                 return stripos($deposit->getName(), $searchQuery) !== false ||
-                       stripos($deposit->getAddress(), $searchQuery) !== false;
+                    stripos($deposit->getAddress(), $searchQuery) !== false;
             });
         }
 

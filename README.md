@@ -58,7 +58,5 @@ $ composer watch
   Mail : curiouslab@admin.com <br>
   Mot de passe : aMLBkroE6gJmS&$$ <br>
 
-  	depot@test.com 
-    pass
-    depot2@test.com
-    pass
+  Mail: depot@admin.com 
+  Mot de passe : aMLBkroE6gJmS&$$

@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Client;
 use App\Entity\Deposit;
 use App\Entity\DeviceMaintenance;
+use App\Entity\MaintenanceStep;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -48,5 +49,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Client', 'fa fa-face-smile', Client::class);
         yield MenuItem::linkToCrud('Deposit', 'fa fa-home', Deposit::class);
         yield MenuItem::linkToCrud('Device maintenance', 'fa fa-laptop', DeviceMaintenance::class);
+        yield MenuItem::linkToCrud('Etape de maintenance', 'fa-solid fa-list', MaintenanceStep::class);
     }
 }

@@ -21,7 +21,7 @@
             <p><strong>Numéro de suivi:</strong> {{ trackingNumber }}</p>
 
             {% if deviceMaintenance %}
-                <p><strong>État de la Maintenance:</strong> Étape actuelle: {{ deviceMaintenance.currentStep }}</p>
+                {# <p><strong>État de la Maintenance:</strong> Étape actuelle: {{ deviceMaintenance.currentStep }}</p> #}
                 <h3>Points de contrôle:</h3>
                 <ul>
                     <li>Écran: {{ deviceMaintenance.screen ? 'OK' : 'NO VALID' }}</li>

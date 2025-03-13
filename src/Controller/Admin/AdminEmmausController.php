@@ -2,35 +2,32 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Client;
 use App\Entity\DeviceMaintenance;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[IsGranted('ROLE_ADMIN_EMMAUS')]
-class AdminEmmausController extends AbstractDashboardController
+class AdminEmmausController extends AbstractController
 {
-    #[Route('/admin-emmaus', name: 'admin_emmaus')]
-    public function index(): Response
-    {
-        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        return $this->redirect($adminUrlGenerator->setController(ClientCrudController::class)->generateUrl());
-    }
 
-    public function configureDashboard(): Dashboard
+    #[Route('/admin/emmaus/maintenance', name: 'admin_emmaus_maintenance')]
+    public function index(EntityManagerInterface $entityManager): Response
     {
-        return Dashboard::new()
-            ->setTitle('Administration Emmaüs');
-    }
+        $repository = $entityManager->getRepository(DeviceMaintenance::class);
 
-    public function configureMenuItems(): iterable
-    {
-        yield MenuItem::linkToCrud('Clients', 'fa fa-user', Client::class);
-        yield MenuItem::linkToCrud('Maintenance', 'fa fa-tools', DeviceMaintenance::class);
+        // Récupération des appareils classés par dépôt
+        $deviceMaintenances = $repository->findBy([], ['deposit' => 'ASC']);
+
+        // Grouper les devices par dépôt
+        $devicesByDeposit = [];
+        foreach ($deviceMaintenances as $device) {
+            $depositName = $device->getDeposit()->getName();
+            $devicesByDeposit[$depositName][] = $device;
+        }
+
+        return $this->render('admin/emmaus/_maintenance.html.twig', [
+            'devicesByDeposit' => $devicesByDeposit,
+        ]);
     }
 }

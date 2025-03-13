@@ -9,7 +9,7 @@
                 {% elseif is_granted('ROLE_ADMIN_POINT_DEPOT') %}
                     <a href="{{ path('depot_admin_index') }}" class="link link-hover">Espace Admin - Point Dépôt</a>
                 {% elseif is_granted('ROLE_ADMIN_EMMAUS') %}
-                    <a href="{{ path('admin_emmaus') }}" class="link link-hover">Espace Admin - Emmaüs</a>
+                    <a href="{{ path('admin_emmaus_maintenance') }}" class="link link-hover">Espace Admin - Emmaüs</a>
                 {% endif %}
             </div>
         </div>

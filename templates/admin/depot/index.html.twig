@@ -30,6 +30,8 @@
 							<tr>
 								<th>ID</th>
 								<th>Client</th>
+								<th>Email</th>
+								<th>Numéro tracking</th>
 								<th>Etape actuelle</th>
 								<th>Dépôt</th>
 								<th>Dernière mise à jour</th>
@@ -42,6 +44,9 @@
 									<td>{{ device.id }}</td>
 									<td>{{ device.client.lastname }}
 										{{ device.client.firstname }}</td>
+									<td>
+									<td>{{ device.client.email }}</td>
+									<td>{{ device.trackingNumber }}</td>
 									<td>
 										<span class="badge badge-info">
 											{% if device.maintenanceLogs|length > 0 %}

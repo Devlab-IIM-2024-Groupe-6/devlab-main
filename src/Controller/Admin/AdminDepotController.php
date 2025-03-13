@@ -155,7 +155,7 @@ class AdminDepotController extends AbstractController
             $maintenanceLogs = $deviceMaintenance->getMaintenanceLogs();
             if (empty($maintenanceLogs) || empty($maintenanceLogs[0]->getCurrentStep())) {
                 $this->addFlash('error', 'Aucun état actuel de maintenance trouvé.');
-                return $this->redirectToRoute('depot_admin_index');
+                return $this->redirectToPreviousPage();
             }
 
             // Récupération et avancement de l'étape
@@ -164,12 +164,12 @@ class AdminDepotController extends AbstractController
 
             if ($this->isGranted('ROLE_ADMIN_POINT_DEPOT') && $stepOrder >= 2) {
                 $this->addFlash('error', "Vous n'êtes pas autorisé à faire cette action.");
-                return $this->redirectToRoute('depot_admin_index');
+                return $this->redirectToPreviousPage();
             }
-    
-            if ($this->isGranted('ROLE_ADMIN_EMMAUS') && $stepOrder <= 2) {
+
+            if ($this->isGranted('ROLE_ADMIN_EMMAUS') && $stepOrder < 2) {
                 $this->addFlash('error', "Vous ne pouvez effectuer cette action");
-                return $this->redirectToRoute('depot_admin_index');
+                return $this->redirectToPreviousPage();
             }
 
             $deviceMaintenanceWorkflow->advanceStep($deviceMaintenance, $stepOrder);
@@ -178,11 +178,33 @@ class AdminDepotController extends AbstractController
             $entityManager->flush();
             $newStep = $deviceMaintenance->getMaintenanceLogs()[0]->getNextStep();
 
-            $this->addFlash('success', "L'étape a été avancée avec succès : {$currentStep->getName()} -> {$newStep->getName()}.");
+            if($newStep){
+                $this->addFlash('success', "L'étape a été avancée avec succès : {$currentStep->getName()} -> {$newStep->getName()}.");
+            }else{
+                $this->addFlash('success', "Dernière étape déjà atteinte.");
+            }
+            // $this->addFlash('success', "L'étape a été avancée avec succès : {$currentStep->getName()} -> {$newStep->getName()}.");
         } catch (\Exception $e) {
             $this->addFlash('error', "Une erreur est survenue : " . $e->getMessage());
         }
 
-        return $this->redirectToRoute('depot_admin_index');
+        return $this->redirectToPreviousPage();
+    }
+
+    /**
+     * Redirige l'utilisateur en fonction de son rôle.
+     */
+    private function redirectToPreviousPage(): Response
+    {
+        if ($this->isGranted('ROLE_ADMIN_POINT_DEPOT')) {
+            return $this->redirectToRoute('depot_admin_index');
+        }
+
+        if ($this->isGranted('ROLE_ADMIN_EMMAUS')) {
+            return $this->redirectToRoute('admin_emmaus_maintenance');
+        }
+
+        // Redirection par défaut (au cas où)
+        return $this->redirectToRoute('homepage');
     }
 }

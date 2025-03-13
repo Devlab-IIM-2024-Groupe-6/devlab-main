@@ -8,7 +8,7 @@
 		class="container mx-auto my-10 px-6 lg:px-20">
 		<!-- Header -->
 		<header class="text-center mb-8">
-			<h1 class="text-4xl font-bold text-primary">Suivi de votre dépôt</h1>
+			<h1 class="text-4xl font-bold text-primary" style="color: #0A3C6E;">Suivi de votre dépôt</h1>
 			<p class="text-gray-600 mt-2">
 				Entrez votre numéro de suivi pour connaître l'état de votre dépôt.
 			</p>
@@ -23,7 +23,7 @@
 					</label>
 					<input type="text" id="tracking-number" name="tracking_number" class="input input-bordered w-full" placeholder="Ex : 12345-ABCDE" required>
 				</div>
-				<button type="submit" class="btn btn-primary w-full">Vérifier</button>
+				<button type="submit" class="btn btn-primary w-full" style="color: white; background-color: #86C43C; border: none;">Vérifier</button>
 			</form>
 		</section>
 		{% for message in app.flashes('error') %}

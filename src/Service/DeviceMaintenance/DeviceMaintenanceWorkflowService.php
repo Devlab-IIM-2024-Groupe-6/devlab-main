@@ -24,9 +24,9 @@ class DeviceMaintenanceWorkflowService
         $stepRepo = $this->entityManager->getRepository(MaintenanceStep::class);
 
         // Trouver la step 0 (Dépôt du formulaire)
-        $currentStep = $stepRepo->findOneBy(['stepOrder' => 0]);
+        $currentStep = $stepRepo->findOneBy(['stepOrder' => 1]);
         // Trouver la step 1 (Dépôt du matériel) comme next
-        $nextStep    = $stepRepo->findOneBy(['stepOrder' => 1]);
+        $nextStep    = $stepRepo->findOneBy(['stepOrder' => 2]);
 
         // Créer le log
         $log = new DeviceMaintenanceLog();

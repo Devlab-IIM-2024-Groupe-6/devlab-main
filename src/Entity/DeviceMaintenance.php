@@ -20,9 +20,6 @@ class DeviceMaintenance
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: MaintenanceStep::class)]
-    private ?MaintenanceStep $currentStep = null;
-
     #[ORM\OneToMany(targetEntity: DeviceMaintenanceLog::class, mappedBy: 'deviceMaintenance', cascade: ['persist', 'remove'])]
     #[OrderBy(['changedAt' => 'DESC'])]
     private Collection $maintenanceLogs;
@@ -95,17 +92,6 @@ class DeviceMaintenance
     {
         return $this->id;
     }
-
-    // public function getCurrentStep(): ?MaintenanceStep
-    // {
-    //     return $this->currentStep;
-    // }
-
-    // public function setCurrentStep(?MaintenanceStep $currentStep): static
-    // {
-    //     $this->currentStep = $currentStep;
-    //     return $this;
-    // }
 
     public function isScreen(): ?bool
     {

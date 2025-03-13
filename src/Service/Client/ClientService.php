@@ -9,38 +9,37 @@ class ClientService
 {
     public function __construct(
         private EntityManagerInterface $entityManager
-    ) {
-    }
+    ) {}
 
     /**
      * Récupère un client par son email.
      * S'il n'existe pas, le crée avec les infos fournies (firstname, lastname, etc.).
+     * Ne met à jour que les champs fournis (évite d'écraser des valeurs existantes avec null).
      */
-    public function getOrCreateClient(
-        string $email,
-        string $firstname,
-        string $lastname
-    ): Client {
-        // On suppose que l'email est unique pour identifier un client.
-        $clientRepository = $this->entityManager->getRepository(Client::class);
-
-        // Cherche un client existant
-        $existingClient = $clientRepository->findOneBy(['email' => $email]);
-
-        if ($existingClient) {
-            return $existingClient;
+    public function getOrCreateClient(?string $email, ?string $firstname, ?string $lastname): ?Client
+    {
+        // Vérifie si l'email est valide (nécessaire pour identifier un client)
+        if (empty($email)) {
+            return null; // Retourne null si aucun email n'est fourni
         }
 
-        // Sinon, création d'un nouveau Client
-        $client = new Client();
-        $client->setEmail($email);
-        $client->setFirstname($firstname);
-        $client->setLastname($lastname);
+        $clientRepository = $this->entityManager->getRepository(Client::class);
+        $client = $clientRepository->findOneBy(['email' => $email]);
 
-        $this->entityManager->persist($client);
-        // Selon la logique de votre application, vous pouvez flush ici,
-        // ou laisser le flush se faire plus tard dans le contrôleur.
-        $this->entityManager->flush();
+        // Si le client n'existe pas, on le crée
+        if (!$client) {
+            $client = new Client();
+            $client->setEmail($email);
+        }
+
+        // Mise à jour seulement si les valeurs sont non nulles et non vides
+        if (!empty($firstname) && $client->getFirstname() !== $firstname) {
+            $client->setFirstname($firstname);
+        }
+
+        if (!empty($lastname) && $client->getLastname() !== $lastname) {
+            $client->setLastname($lastname);
+        }
 
         return $client;
     }

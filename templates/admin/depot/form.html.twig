@@ -1,52 +1,86 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<div
-		class="container mx-auto p-4" {{ stimulus_controller('device-maintenance') }}>
-		<!-- Formulaire création -->
+	<div class="container mx-auto p-4">
 		{{ form_start(form) }}
-		<div
-			class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-			<!-- Champs client -->
-			<div class="space-y-2">
-				{{ form_row(form.email) }}
-				{{ form_row(form.first_name) }}
-				{{ form_row(form.last_name) }}
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+			<!-- Section Client -->
+			<div class="space-y-4 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+				<h2 class="text-xl font-semibold mb-4 text-gray-700">Informations client</h2>
+				{{ form_row(form.email, {'attr': {'class': 'input input-bordered w-full'}}) }}
+				{{ form_row(form.first_name, {'attr': {'class': 'input input-bordered w-full'}}) }}
+				{{ form_row(form.last_name, {'attr': {'class': 'input input-bordered w-full'}}) }}
 			</div>
 
-			<!-- Champs device -->
-			{# <div class="space-y-2">
-							{{ form_row(form.screen) }}
-							{{ form_row(form.oxidationStatus) }}
-							<!-- ... autres champs ... -->
-						</div> #}
-		</div>
-		<button type="submit" class="btn btn-primary">Créer</button>
-		{{ form_end(form) }}
-
-		<!-- Liste des devices -->
-		<div class="space-y-4 mt-8">
-			{% for device in devices %}
-				<div class="card bg-base-100 shadow-xl" {{ stimulus_target('device-maintenance', 'device') }} data-device-id="{{ device.id }}">
-					<div class="card-body">
-						<div class="flex justify-between items-center">
-							<h3 class="card-title">{{ device.client.firstName }}</h3>
-
-							<div
-								class="flex gap-2 items-center">
-								<!-- Boutons étapes -->
-								<button class="btn btn-circle btn-sm btn-ghost" data-action="click->device-maintenance#toggleStep" data-step="2">
-									<img src="{{ asset('icons/check.svg') }}" alt="Step 2" class="h-5 w-5">
-								</button>
-
-								<button class="btn btn-circle btn-sm btn-ghost" data-action="click->device-maintenance#toggleStep" data-step="3">
-									<img src="{{ asset('icons/check.svg') }}" alt="Step 3" class="h-5 w-5">
-								</button>
+			<!-- Section Options -->
+			<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+				<div class="flex items-center justify-between mb-4">
+					<h2 class="text-xl font-semibold text-gray-700">Options techniques</h2>
+					<button type="button" id="toggleDropdown" class="btn btn-ghost flex items-center gap-2">
+						<span>Options avancées</span>
+						<svg id="chevron" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+						</svg>
+					</button>
+				</div>
+				
+				<div id="dropdownOptions" class="hidden space-y-4">
+					<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+						{% for field in [
+							form.screen, form.oxidationStatus, form.hinges, form.fan,
+							form.button, form.sensors, form.chassis, form.dataWipe,
+							form.computerUnlock, form.driver, form.computerUpdate,
+							form.motherboard, form.networks, form.components,
+							form.battery, form.powerSupply
+						] %}
+							<div class="form-control bg-gray-50 p-3 rounded-lg transition-colors hover:bg-gray-100">
+								<div class="flex items-center justify-between">
+									{{ form_label(field, null, {'label_attr': {'class': 'text-sm font-medium text-gray-600'}}) }}
+									<div class="relative">
+										{{ form_widget(field, {'attr': {'class': 'toggle toggle-success toggle-lg'}}) }}
+									</div>
+								</div>
 							</div>
-						</div>
+						{% endfor %}
 					</div>
 				</div>
-			{% endfor %}
+			</div>
 		</div>
+
+		<!-- Bouton de soumission -->
+		 <div class="mt-8 flex justify-end gap-4">
+			{#<button type="submit" class="btn btn-primary px-6 py-3 shadow-lg">
+				<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+				</svg>
+				Sauvegarder
+			</button> #}
+			<a href="{{ path('depot_admin_index') }}" class="btn btn-outline px-6 py-3">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l-5-5m0 0l5-5m-5 5h14"/>
+						</svg>
+						Retour
+					</a>
+			{{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary px-6 py-3 shadow-lg'}}) }}
+
+		</div>
+		{{ form_end(form) }}
 	</div>
+
+	<script>
+		document.getElementById('toggleDropdown').addEventListener('click', function() {
+			const dropdown = document.getElementById('dropdownOptions');
+			const chevron = document.getElementById('chevron');
+			dropdown.classList.toggle('hidden');
+			chevron.classList.toggle('rotate-180');
+			
+			// Animation douce
+			if (!dropdown.classList.contains('hidden')) {
+				dropdown.animate([
+					{ opacity: 0, transform: 'translateY(-10px)' },
+					{ opacity: 1, transform: 'translateY(0)' }
+				], { duration: 200 });
+			}
+		});
+	</script>
 {% endblock %}

@@ -1,4 +1,4 @@
-# BAP-8
+# Devlab-IIM 2024 (Groupe 6)
 
 ## Installation
 1. Clone the repository

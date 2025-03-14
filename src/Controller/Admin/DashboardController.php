@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Deposit;
 use App\Entity\DeviceMaintenance;
+use App\Entity\MaintenanceStep;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -11,10 +12,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class DashboardController extends AbstractDashboardController
 {
     #[Route('/admin', name: 'admin')]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(): Response
     {
 
@@ -46,5 +49,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('User', 'fa fa-user', User::class);
         yield MenuItem::linkToCrud('Deposit', 'fa fa-home', Deposit::class);
         yield MenuItem::linkToCrud('Device maintenance', 'fa fa-laptop', DeviceMaintenance::class);
+        yield MenuItem::linkToCrud('Etape de maintenance', 'fa-solid fa-list', MaintenanceStep::class);
     }
 }

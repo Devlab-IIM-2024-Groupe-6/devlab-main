@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Se connecter
+{% endblock %}
+
+{% block body %}
+	<div class="container mx-auto my-10 px-6 lg:px-20 max-w-md">
+		{% if app.user %}
+			<div class="alert alert-info shadow-lg">
+				<span>
+					Vous êtes déjà connecté en tant que
+					<strong>{{ app.user.userIdentifier }}</strong>.
+					<a href="{{ path('app_logout') }}" class="link text-primary">Déconnexion</a>
+				</span>
+			</div>
+		{% else %}
+			<!-- Form Header -->
+			<header class="text-center mb-8">
+				<h1 class="text-3xl font-bold text-primary" style="color: #0A3C6E;">Connexion</h1>
+				<p class="text-gray-600 mt-2">Veuillez entrer vos identifiants pour accéder à votre compte.</p>
+			</header>
+
+			<!-- Form -->
+			<form
+				method="post" class="bg-base-100 shadow-md rounded-lg p-6 space-y-4">
+				<!-- Error Message -->
+				{% if error %}
+					<div class="alert alert-error shadow-lg">
+						<span>{{ error.messageKey|trans(error.messageData, 'security') }}</span>
+					</div>
+				{% endif %}
+
+				<!-- Email Field -->
+				<div class="form-control">
+					<label for="username" class="label">
+						<span class="label-text">Email</span>
+					</label>
+					<input type="email" name="_username" id="username" value="{{ last_username }}" class="input input-bordered w-full" autocomplete="email" required autofocus>
+				</div>
+
+				<!-- Password Field -->
+				<div class="form-control">
+					<label for="password" class="label">
+						<span class="label-text">Mot de passe</span>
+					</label>
+					<input type="password" name="_password" id="password" class="input input-bordered w-full" autocomplete="current-password" required>
+				</div>
+
+				<!-- CSRF Token -->
+				<input
+				type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+				<!-- Submit Button -->
+				<div>
+					<button type="submit" class="btn w-full" style="background-color: #0A3C6E; color: white;">Se connecter</button>
+				</div>
+			</form>
+		{% endif %}
+	</div>
+{% endblock %}

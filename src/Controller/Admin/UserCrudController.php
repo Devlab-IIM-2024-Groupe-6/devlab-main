@@ -23,13 +23,15 @@ class UserCrudController extends AbstractCrudController
         return User::class;
     }
 
-    
+
     public function configureFields(string $pageName): iterable
     {
         $roleChoices = [
             'User' => 'ROLE_USER',
             'Deposit' => 'ROLE_DEPOSIT',
             'Admin' => 'ROLE_ADMIN',
+            'Admin Point Dépôt' => 'ROLE_ADMIN_POINT_DEPOT',
+            'Admin Emmaüs' => 'ROLE_ADMIN_EMMAUS',
         ];
 
         $rolesField = ChoiceField::new('roles')
@@ -37,7 +39,7 @@ class UserCrudController extends AbstractCrudController
             ->allowMultipleChoices(true);
 
         $rolesField->setFormTypeOption('data', ['ROLE_USER']);
-        
+
         return [
             IdField::new('id')->hideOnForm()->hideOnIndex(),
             AssociationField::new('deposit')

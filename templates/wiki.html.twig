@@ -4,25 +4,38 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container mt-5">
-		<h1 class="text-center">Wiki des problèmes récurrents</h1>
-		<p class="text-muted text-center">
-			Trouvez des solutions aux problèmes les plus fréquents sur le matériel informatique.
-		</p>
+	<div
+		class="container mx-auto my-10 px-6 lg:px-20">
+		<!-- Header -->
+		<header class="text-center mb-8">
+			<h1 class="text-4xl font-bold text-primary" style="color: #0A3C6E;">Wiki des problèmes récurrents</h1>
+			<p class="text-gray-600 mt-2">
+				Trouvez des solutions aux problèmes les plus fréquents sur le matériel informatique.
+			</p>
+		</header>
 
-		<div class="list-group mt-4">
-			<a href="#" class="list-group-item list-group-item-action">
-				<h5 class="mb-1">Problème : L'ordinateur ne s'allume pas</h5>
-				<p class="mb-1">Vérifiez l'alimentation et le câble d'alimentation. Si le problème persiste, essayez une autre prise ou vérifiez la batterie.</p>
-			</a>
-			<a href="#" class="list-group-item list-group-item-action">
-				<h5 class="mb-1">Problème : L'écran affiche des lignes étranges</h5>
-				<p class="mb-1">Redémarrez l'ordinateur et vérifiez la connexion du câble VGA/HDMI. Cela peut être dû à un problème matériel ou logiciel.</p>
-			</a>
-			<a href="#" class="list-group-item list-group-item-action">
-				<h5 class="mb-1">Problème : Le système est très lent</h5>
-				<p class="mb-1">Vérifiez si vous avez suffisamment d'espace disque libre et désinstallez les programmes inutiles. Mettez également à jour votre système.</p>
-			</a>
-		</div>
+		<!-- Liste des problèmes -->
+		<section>
+			<div class="grid gap-6">
+				<a href="#" class="block bg-base-100 shadow-md rounded-lg p-6 hover:bg-base-200">
+					<h5 class="text-xl font-semibold text-primary mb-2" style="color :#0A3C6E;">Problème : L'ordinateur ne s'allume pas</h5>
+					<p class="text-gray-600">
+						Vérifiez l'alimentation et le câble d'alimentation. Si le problème persiste, essayez une autre prise ou vérifiez la batterie.
+					</p>
+				</a>
+				<a href="#" class="block bg-base-100 shadow-md rounded-lg p-6 hover:bg-base-200">
+					<h5 class="text-xl font-semibold text-primary mb-2" style="color :#0A3C6E;">Problème : L'écran affiche des lignes étranges</h5>
+					<p class="text-gray-600">
+						Redémarrez l'ordinateur et vérifiez la connexion du câble VGA/HDMI. Cela peut être dû à un problème matériel ou logiciel.
+					</p>
+				</a>
+				<a href="#" class="block bg-base-100 shadow-md rounded-lg p-6 hover:bg-base-200">
+					<h5 class="text-xl font-semibold text-primary mb-2" style="color :#0A3C6E;">Problème : Le système est très lent</h5>
+					<p class="text-gray-600">
+						Vérifiez si vous avez suffisamment d'espace disque libre et désinstallez les programmes inutiles. Mettez également à jour votre système.
+					</p>
+				</a>
+			</div>
+		</section>
 	</div>
 {% endblock %}

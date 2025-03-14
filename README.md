@@ -1,4 +1,4 @@
-# BAP-8
+# Devlab-IIM 2024 (Groupe 6)
 
 ## Installation
 1. Clone the repository
@@ -36,11 +36,26 @@ $ php bin/console doctrine:fixtures:load
 ````shell 
 $ symfony serve
 ````
-10. Go to http://127.0.0.1:8000
+12. Run the tailwind watch command
+````shell 
+$ composer watch
+````
+13. Go to http://127.0.0.1:8000
 
 11. Enjoy!
 
 ## Accéder a l'admin : http://127.0.0.1:8000/admin <br>
+## Accéder a l'admin d'un depot : http://127.0.0.1:8000/admin/depot <br>
+## Accéder a l'admin d'Emmaus : http://127.0.0.1:8000/admin/emmaus <br>
 
   Mail : curiouslab@admin.com <br>
   Mot de passe : aMLBkroE6gJmS&$$ <br>
+
+  Mail: depot@admin.com <br>
+  Mot de passe : aMLBkroE6gJmS&$$ <br>
+
+  Mail: emmaus@admin.com <br>
+  Mot de passe : aMLBkroE6gJmS&$$ <br>
+
+  ## Accéder au lien du barcode : http://127.0.0.1:8000/barcode/trackingNumber <br>
+  ## Accéder au lien du certificat : http://127.0.0.1:8000/certificate/trackingNumber <br>

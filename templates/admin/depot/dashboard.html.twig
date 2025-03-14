@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block nav %}  {% endblock %}
+
+{% block title %}Administration Depot - Gestion des Maintenances{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto px-4 pt-6 pb-2 min-h-[calc(100vh)] mt-[-100px]">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mb-4">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-error mb-4">{{ message }}</div>
+        {% endfor %}
+
+        <div class="flex justify-between items-end mb-6">
+            <h1 class="text-2xl font-bold">Gestion des Maintenances</h1>
+            <a href="{{ path('app_logout') }}" class="font-bold">
+                Logout
+            </a>
+        </div>
+
+        {% for depositName, devices in devicesByDeposit %}
+            <div class="card bg-base-100 shadow mb-8">
+                <div class="card-body">
+                    <h2 class="text-xl font-semibold mb-4">{{ depositName }}</h2>
+                    <div class="overflow-x-auto">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Client</th>
+                                    <th>Email</th>
+                                    <th>Numéro tracking</th>
+                                    <th>Étape actuelle</th>
+                                    <th>Dernière mise à jour</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for device in devices %}
+                                    {% set stepOrder = device.maintenanceLogs|length > 0 ? device.maintenanceLogs[0].currentStep.stepOrder : 0 %}
+                                    <tr>
+                                        <td>{{ device.id }}</td>
+                                        <td>{{ device.client.lastname }} {{ device.client.firstname }}</td>
+                                        <td>{{ device.client.email }}</td>
+                                        <td>{{ device.trackingNumber }}</td>
+                                        <td>
+                                            <span class="badge badge-info">
+                                                {% if device.maintenanceLogs|length > 0 %}
+                                                    {{ device.maintenanceLogs[0].currentStep ? device.maintenanceLogs[0].currentStep.name : 'Non défini' }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if device.maintenanceLogs|length > 0 %}
+                                                {{ device.maintenanceLogs[0].changedAt|date('d/m/Y H:i') }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="flex gap-2">
+                                                <div class="tooltip" data-tip="Avancer d'étape">
+                                                    <form id="nextStepForm-{{ device.id }}" method="POST" action="{{ path('admin_depot_next_step', { id: device.id }) }}">
+                                                        <button type="button" class="btn btn-circle btn-sm" onclick="confirmNextStep(event, '{{ device.id }}')">
+                                                            <i class="fa-solid fa-forward-step"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <div class="alert alert-info">Aucune maintenance pour ce dépôt</div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-warning text-center">Aucun appareil en maintenance.</div>
+        {% endfor %}
+    </div>
+
+    <!-- Modale de confirmation -->
+    <dialog id="nextStepModal" class="modal">
+        <div class="modal-box">
+            <h3 class="text-lg font-bold">Confirmation</h3>
+            <p class="py-4">Voulez-vous vraiment avancer d'une étape ?</p>
+            <div class="modal-action">
+                <button id="confirmNextStep" class="btn btn-success">Oui</button>
+                <form method="dialog">
+                    <button class="btn btn-error">Annuler</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Script JavaScript -->
+    <script>
+        let nextStepForm = null;
+
+        function confirmNextStep(event, deviceId) {
+            event.preventDefault();
+            nextStepForm = document.getElementById(`nextStepForm-${deviceId}`);
+            nextStepModal.showModal();
+        }
+
+        document.getElementById("confirmNextStep").addEventListener("click", function () {
+            if (nextStepForm) {
+                nextStepForm.submit();
+            }
+            nextStepModal.close();
+        });
+    </script>
+
+{% endblock %}
+
+{% block footer %} {% endblock %}

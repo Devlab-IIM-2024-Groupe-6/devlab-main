@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Certificat de reconditionnement - {{ trackingNumber }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 100%; max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 24px; font-weight: bold; }
+        h2 { font-size: 20px; font-weight: bold; }
+        p { font-size: 16px; }
+        ul { list-style-type: disc; padding-left: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Certificat de reconditionnement</h1>
+        <div>
+            <h2>Détails de la Maintenance</h2>
+            <p><strong>Client:</strong> {{ client.firstname }} {{ client.lastname }}</p>
+            <p><strong>Numéro de suivi:</strong> {{ trackingNumber }}</p>
+
+            {% if deviceMaintenance %}
+                <h3>Étape actuelle: {{ currentStep.name }}</h3> 
+                <h3>Points de contrôle:</h3>
+                <ul>
+                    <li>Écran: {{ deviceMaintenance.screen ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>État d'oxydation: {{ deviceMaintenance.oxidationStatus ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Charnières: {{ deviceMaintenance.hinges ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Ventilateur: {{ deviceMaintenance.fan ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Boutons: {{ deviceMaintenance.button ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Capteurs: {{ deviceMaintenance.sensors ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Châssis: {{ deviceMaintenance.chassis ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Effacement des données: {{ deviceMaintenance.dataWipe ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Déverrouillage: {{ deviceMaintenance.computerUnlock ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Pilotes: {{ deviceMaintenance.driver ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Mise à jour: {{ deviceMaintenance.computerUpdate ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Carte mère: {{ deviceMaintenance.motherboard ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Réseaux: {{ deviceMaintenance.networks ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Composants: {{ deviceMaintenance.components ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Batterie: {{ deviceMaintenance.battery ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Alimentation: {{ deviceMaintenance.powerSupply ? 'OK' : 'Maintenance nécessaire' }}</li>
+                </ul>
+            {% else %}
+                <p>La maintenance a été validée avec succès.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

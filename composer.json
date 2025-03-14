@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.3",
+        "dompdf/dompdf": "^3.1",
         "easycorp/easyadmin-bundle": "^4.14",
         "symfony/console": "6.4.*",
         "symfony/dotenv": "6.4.*",
@@ -21,6 +22,7 @@
         "symfony/twig-bundle": "6.4.*",
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/intl-extra": "^3.20",
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
@@ -35,7 +37,8 @@
             "symfony/flex": true,
             "symfony/runtime": true
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "process-timeout": 1000
     },
     "autoload": {
         "psr-4": {
@@ -66,7 +69,8 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "watch": "php bin/console tailwind:build --watch"
     },
     "conflict": {
         "symfony/symfony": "*"

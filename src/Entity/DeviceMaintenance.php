@@ -1,10 +1,18 @@
 <?php
+
 namespace App\Entity;
 
-use App\Repository\DeviceMaintenanceRepository;
+use App\Entity\Client;
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use App\Repository\DeviceMaintenanceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\OrderBy;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DeviceMaintenanceRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class DeviceMaintenance
 {
     #[ORM\Id]
@@ -12,103 +20,77 @@ class DeviceMaintenance
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'deviceMaintenances')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    #[ORM\OneToMany(targetEntity: DeviceMaintenanceLog::class, mappedBy: 'deviceMaintenance', cascade: ['persist', 'remove'])]
+    #[OrderBy(['changedAt' => 'DESC'])]
+    private Collection $maintenanceLogs;
 
-    #[ORM\Column(length: 255)]
-    private ?string $trackingNumber = null;
-
-    #[ORM\Column]
-    private ?int $currentStep = null;
-
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $screen = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $oxidationStatus = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $hinges = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $fan = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $button = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $sensors = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $chassis = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $dataWipe = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $computerUnlock = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $driver = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $computerUpdate = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $motherboard = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $networks = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $components = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $battery = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $powerSupply = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $trackingNumber = null;
+
+    #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'deviceMaintenances')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Client $client = null;
+
+    #[ORM\ManyToOne(targetEntity: Deposit::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Deposit $deposit = null;
+
+    public function __construct()
+    {
+        $this->maintenanceLogs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getTrackingNumber(): ?string
-    {
-        return $this->trackingNumber;
-    }
-
-    public function setTrackingNumber(string $trackingNumber): static
-    {
-        $this->trackingNumber = $trackingNumber;
-
-        return $this;
-    }
-
-    public function getCurrentStep(): ?int
-    {
-        return $this->currentStep;
-    }
-
-    public function setCurrentStep(int $currentStep): static
-    {
-        $this->currentStep = $currentStep;
-
-        return $this;
     }
 
     public function isScreen(): ?bool
@@ -116,10 +98,9 @@ class DeviceMaintenance
         return $this->screen;
     }
 
-    public function setScreen(bool $screen): static
+    public function setScreen(?bool $screen): static
     {
         $this->screen = $screen;
-
         return $this;
     }
 
@@ -128,10 +109,9 @@ class DeviceMaintenance
         return $this->oxidationStatus;
     }
 
-    public function setOxidationStatus(bool $oxidationStatus): static
+    public function setOxidationStatus(?bool $oxidationStatus): static
     {
         $this->oxidationStatus = $oxidationStatus;
-
         return $this;
     }
 
@@ -140,10 +120,9 @@ class DeviceMaintenance
         return $this->hinges;
     }
 
-    public function setHinges(bool $hinges): static
+    public function setHinges(?bool $hinges): static
     {
         $this->hinges = $hinges;
-
         return $this;
     }
 
@@ -152,10 +131,9 @@ class DeviceMaintenance
         return $this->fan;
     }
 
-    public function setFan(bool $fan): static
+    public function setFan(?bool $fan): static
     {
         $this->fan = $fan;
-
         return $this;
     }
 
@@ -164,10 +142,9 @@ class DeviceMaintenance
         return $this->button;
     }
 
-    public function setButton(bool $button): static
+    public function setButton(?bool $button): static
     {
         $this->button = $button;
-
         return $this;
     }
 
@@ -176,10 +153,9 @@ class DeviceMaintenance
         return $this->sensors;
     }
 
-    public function setSensors(bool $sensors): static
+    public function setSensors(?bool $sensors): static
     {
         $this->sensors = $sensors;
-
         return $this;
     }
 
@@ -188,10 +164,9 @@ class DeviceMaintenance
         return $this->chassis;
     }
 
-    public function setChassis(bool $chassis): static
+    public function setChassis(?bool $chassis): static
     {
         $this->chassis = $chassis;
-
         return $this;
     }
 
@@ -200,10 +175,9 @@ class DeviceMaintenance
         return $this->dataWipe;
     }
 
-    public function setDataWipe(bool $dataWipe): static
+    public function setDataWipe(?bool $dataWipe): static
     {
         $this->dataWipe = $dataWipe;
-
         return $this;
     }
 
@@ -212,10 +186,9 @@ class DeviceMaintenance
         return $this->computerUnlock;
     }
 
-    public function setComputerUnlock(bool $computerUnlock): static
+    public function setComputerUnlock(?bool $computerUnlock): static
     {
         $this->computerUnlock = $computerUnlock;
-
         return $this;
     }
 
@@ -224,10 +197,9 @@ class DeviceMaintenance
         return $this->driver;
     }
 
-    public function setDriver(bool $driver): static
+    public function setDriver(?bool $driver): static
     {
         $this->driver = $driver;
-
         return $this;
     }
 
@@ -236,10 +208,9 @@ class DeviceMaintenance
         return $this->computerUpdate;
     }
 
-    public function setComputerUpdate(bool $computerUpdate): static
+    public function setComputerUpdate(?bool $computerUpdate): static
     {
         $this->computerUpdate = $computerUpdate;
-
         return $this;
     }
 
@@ -248,10 +219,9 @@ class DeviceMaintenance
         return $this->motherboard;
     }
 
-    public function setMotherboard(bool $motherboard): static
+    public function setMotherboard(?bool $motherboard): static
     {
         $this->motherboard = $motherboard;
-
         return $this;
     }
 
@@ -260,10 +230,9 @@ class DeviceMaintenance
         return $this->networks;
     }
 
-    public function setNetworks(bool $networks): static
+    public function setNetworks(?bool $networks): static
     {
         $this->networks = $networks;
-
         return $this;
     }
 
@@ -272,10 +241,9 @@ class DeviceMaintenance
         return $this->components;
     }
 
-    public function setComponents(bool $components): static
+    public function setComponents(?bool $components): static
     {
         $this->components = $components;
-
         return $this;
     }
 
@@ -284,10 +252,9 @@ class DeviceMaintenance
         return $this->battery;
     }
 
-    public function setBattery(bool $battery): static
+    public function setBattery(?bool $battery): static
     {
         $this->battery = $battery;
-
         return $this;
     }
 
@@ -296,10 +263,77 @@ class DeviceMaintenance
         return $this->powerSupply;
     }
 
-    public function setPowerSupply(bool $powerSupply): static
+    public function setPowerSupply(?bool $powerSupply): static
     {
         $this->powerSupply = $powerSupply;
-
         return $this;
+    }
+
+    public function getTrackingNumber(): ?string
+    {
+        return $this->trackingNumber;
+    }
+
+    public function setTrackingNumber(?string $trackingNumber): static
+    {
+        $this->trackingNumber = $trackingNumber;
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function generateTrackingNumber(): void
+    {
+        if (!$this->trackingNumber) {
+            $this->trackingNumber = strtoupper(bin2hex(random_bytes(4))) . '-' . random_int(1000, 9999);
+        }
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): static
+    {
+        $this->client = $client;
+        return $this;
+    }
+
+    public function getMaintenanceLogs(): Collection
+    {
+        return $this->maintenanceLogs;
+    }
+
+    public function addMaintenanceLog(DeviceMaintenanceLog $log): static
+    {
+        if (!$this->maintenanceLogs->contains($log)) {
+            $this->maintenanceLogs->add($log);
+            $log->setDeviceMaintenance($this);
+        }
+        return $this;
+    }
+
+    public function getDeposit(): ?Deposit
+    {
+        return $this->deposit;
+    }
+
+    public function setDeposit(?Deposit $deposit): static
+    {
+        $this->deposit = $deposit;
+        return $this;
+    }
+
+    public function getLatestMaintenanceLog(): ?DeviceMaintenanceLog
+    {
+        if ($this->maintenanceLogs->isEmpty()) {
+            return null;
+        }
+
+        // Tri par date décroissante et récupération du premier élément
+        $logs = $this->maintenanceLogs->toArray();
+        usort($logs, fn($a, $b) => $b->getChangedAt() <=> $a->getChangedAt());
+    
+        return $logs[0] ?? null;
     }
 }

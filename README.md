@@ -54,6 +54,8 @@ $ composer watch
 14. Enjoy!
 
 ## Accéder a l'admin : http://127.0.0.1:8000/admin <br>
+## Accéder a l'admin d'un depot : http://127.0.0.1:8000/admin/depot <br>
+## Accéder a l'admin d'Emmaus : http://127.0.0.1:8000/admin/emmaus <br>
 
   Mail : curiouslab@admin.com <br>
   Mot de passe : aMLBkroE6gJmS&$$ <br>
@@ -63,3 +65,6 @@ $ composer watch
 
   Mail: emmaus@admin.com <br>
   Mot de passe : aMLBkroE6gJmS&$$ <br>
+
+  ## Accéder au lien du barcode : http://127.0.0.1:8000/barcode/trackingNumber <br>
+  ## Accéder au lien du certificat : http://127.0.0.1:8000/certificate/trackingNumber <br>

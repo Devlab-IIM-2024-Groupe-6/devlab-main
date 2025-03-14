@@ -39,7 +39,7 @@ class AppFixtures extends Fixture
         $testDeposit->setDescription('Curious Lab Description Test');
         $manager->persist($testDeposit);
 
-        // 2) Création d'un utilisateur (User), rattaché au Deposit
+        // 2) Création d'un admin, rattaché au Deposit
         $userSuperAdmin = new User();
         $userSuperAdmin->setEmail('curiouslab@admin.com');
         $hashedPassword = $this->userPasswordHasher->hashPassword($userSuperAdmin, 'aMLBkroE6gJmS&$$');
@@ -55,31 +55,28 @@ class AppFixtures extends Fixture
         $hashedPassword = $this->userPasswordHasher->hashPassword($userAdminPointDepot, 'aMLBkroE6gJmS&$$');
         $userAdminPointDepot->setPassword($hashedPassword);
         $userAdminPointDepot->setRoles(['ROLE_ADMIN_POINT_DEPOT']);
-        $userAdminPointDepot->setFirstname('Curious');
-        $userAdminPointDepot->setLastname('Lab');
+        $userAdminPointDepot->setFirstname('Depot');
+        $userAdminPointDepot->setLastname('Admin');
         $userAdminPointDepot->setDeposit($testDeposit);
         $manager->persist($userAdminPointDepot);
 
-        // 3) Création d’un Client (pas de setDeposit, car c’est commenté dans l’entité)
+        $userAdminEmmaus = new User();
+        $userAdminEmmaus->setEmail('emmaus@admin.com');
+        $hashedPassword = $this->userPasswordHasher->hashPassword($userAdminEmmaus, 'aMLBkroE6gJmS&$$');
+        $userAdminEmmaus->setPassword($hashedPassword);
+        $userAdminEmmaus->setRoles(['ROLE_ADMIN_EMMAUS']);
+        $userAdminEmmaus->setFirstname('Emmaus');
+        $userAdminEmmaus->setLastname('Admin');
+        $manager->persist($userAdminEmmaus);
+
+        // 3) Création d’un Client
         $client = new Client();
         $client->setEmail('john@doe.com');
         $client->setFirstname('John');
         $client->setLastname('Doe');
         $manager->persist($client);
 
-        // 4) Création d’un DeviceMaintenance lié au Client et au Deposit
-        $deviceMaintenance = new DeviceMaintenance();
-        $deviceMaintenance->setClient($client);
-        $deviceMaintenance->setDeposit($deposit);
-
-        // Quelques exemples pour les champs booléens
-        $deviceMaintenance->setScreen(true);
-        $deviceMaintenance->setFan(true);
-        $deviceMaintenance->setButton(false);
-
-        $manager->persist($deviceMaintenance);
-
-        // 5) Création des 5 étapes de maintenance, avec l'ordre
+        // 4) Création des 5 étapes de maintenance, avec l'ordre
         $step1 = new MaintenanceStep();
         $step1->setName('Dépôt du formulaire');
         $step1->setStepOrder(1);
@@ -105,6 +102,36 @@ class AppFixtures extends Fixture
         $step5->setStepOrder(5);
         $manager->persist($step5);
 
+        // 5) Création d’un DeviceMaintenance lié au Client et au Deposit
+        $deviceMaintenance = new DeviceMaintenance();
+        $deviceMaintenance->setClient($client);
+        $deviceMaintenance->setDeposit($deposit);
+        // Quelques exemples pour les champs booléens
+        $deviceMaintenance->setScreen(true);
+        $deviceMaintenance->setFan(true);
+        $deviceMaintenance->setButton(false);
+        $manager->persist($deviceMaintenance);
+
+        $deviceMaintenance2 = new DeviceMaintenance();
+        $deviceMaintenance2->setClient($client);
+        $deviceMaintenance2->setDeposit($deposit);
+        $manager->persist($deviceMaintenance2);
+
+        $deviceMaintenance3 = new DeviceMaintenance();
+        $deviceMaintenance3->setClient($client);
+        $deviceMaintenance3->setDeposit($deposit);
+        $manager->persist($deviceMaintenance3);
+
+        $deviceMaintenance4 = new DeviceMaintenance();
+        $deviceMaintenance4->setClient($client);
+        $deviceMaintenance4->setDeposit($deposit);
+        $manager->persist($deviceMaintenance4);
+
+        $deviceMaintenance5 = new DeviceMaintenance();
+        $deviceMaintenance5->setClient($client);
+        $deviceMaintenance5->setDeposit($deposit);
+        $manager->persist($deviceMaintenance5);
+
         // 6) Création des logs de maintenance (un par étape)
         $log1 = new DeviceMaintenanceLog();
         $log1->setDeviceMaintenance($deviceMaintenance);
@@ -114,7 +141,7 @@ class AppFixtures extends Fixture
         $manager->persist($log1);
 
         $log2 = new DeviceMaintenanceLog();
-        $log2->setDeviceMaintenance($deviceMaintenance);
+        $log2->setDeviceMaintenance($deviceMaintenance2);
         $log2->setPreviousStep($step1);
         $log2->setNextStep($step3);
         $log2->setCurrentStep($step2);
@@ -122,7 +149,7 @@ class AppFixtures extends Fixture
         $manager->persist($log2);
 
         $log3 = new DeviceMaintenanceLog();
-        $log3->setDeviceMaintenance($deviceMaintenance);
+        $log3->setDeviceMaintenance($deviceMaintenance3);
         $log3->setCurrentStep($step3);
         $log3->setPreviousStep($step2);
         $log3->setNextStep($step4);
@@ -130,7 +157,7 @@ class AppFixtures extends Fixture
         $manager->persist($log3);
 
         $log4 = new DeviceMaintenanceLog();
-        $log4->setDeviceMaintenance($deviceMaintenance);
+        $log4->setDeviceMaintenance($deviceMaintenance4);
         $log4->setCurrentStep($step4);
         $log4->setPreviousStep($step3);
         $log4->setNextStep($step5);
@@ -138,7 +165,7 @@ class AppFixtures extends Fixture
         $manager->persist($log4);
 
         $log5 = new DeviceMaintenanceLog();
-        $log5->setDeviceMaintenance($deviceMaintenance);
+        $log5->setDeviceMaintenance($deviceMaintenance5);
         $log5->setCurrentStep($step5);
         $log5->setPreviousStep($step4);
         $log5->setChangedAt(new \DateTime());

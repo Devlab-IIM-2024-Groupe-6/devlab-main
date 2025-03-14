@@ -46,7 +46,7 @@
 					<p class="mb-2"><span class="font-bold">Numéro de suivi :</span> {{ trackingNumber }}</p>
 				</div>
 
-				<div class="alert alert-info shadow-lg">
+				<div class="alert alert-info shadow-lg text-white">
 					<div>
 						<span class="font-bold">Statut :</span>
 						<span>
@@ -59,8 +59,11 @@
 						</span>
 					</div>
 				</div>
-
-				{% include 'Timeline.html.twig' %}
+				{% if result.currentStep %}
+					{% include 'Timeline.html.twig' %}
+				{% else %}
+					En attente de traitement initial
+				{% endif %}
 			</section>
 		{% endif %}
 	</div>

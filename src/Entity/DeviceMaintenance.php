@@ -331,9 +331,9 @@ class DeviceMaintenance
         }
 
         // Tri par date décroissante et récupération du premier élément
-        $iterator = $this->maintenanceLogs->getIterator();
-        $iterator->uasort(fn($a, $b) => $b->getChangedAt() <=> $a->getChangedAt());
-
-        return iterator_to_array($iterator)[0] ?? null;
+        $logs = $this->maintenanceLogs->toArray();
+        usort($logs, fn($a, $b) => $b->getChangedAt() <=> $a->getChangedAt());
+    
+        return $logs[0] ?? null;
     }
 }

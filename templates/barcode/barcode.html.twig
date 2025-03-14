@@ -7,15 +7,18 @@
 {% endblock %}
 
 {% block body %}
-    <div class="m-4">
-        <h1>Code-barres pour {{ client.firstname }} {{ client.lastname }}</h1>
-        <div>Point de dépôt : {{ deposit.name }}</div>
-        <p>Numéro de suivi : {{ trackingNumber }}</p>
-        <img src="data:image/png;base64,{{ barcode }}" alt="Code-barres pour {{ trackingNumber }}">
+    <div class="h-[calc(100vh-100px)] flex flex-col justify-center items-center">
+        <div>
+            <h1>Code-barres pour {{ client.firstname }} {{ client.lastname }}</h1>
+            <div>Point de dépôt : {{ deposit.name }}</div>
+            <p>Numéro de suivi : {{ trackingNumber }}</p>
+            <br>
+            <img src="data:image/png;base64,{{ barcode }}" alt="Code-barres pour {{ trackingNumber }}">
+        </div>
+        <a href="{{ path('download_pdf', {'type': 'barcode', 'trackingNumber': trackingNumber}) }}" class="bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded">
+            Télécharger le code-barres en PDF
+        </a>
     </div>
-    <a href="{{ path('download_pdf', {'type': 'barcode', 'trackingNumber': trackingNumber}) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Télécharger le code-barres en PDF
-    </a>
 {% endblock %}
 
 {% block footer %} {% endblock %}

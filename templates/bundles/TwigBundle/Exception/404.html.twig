@@ -3,16 +3,16 @@
 {% block title %}Page introuvable{% endblock %}
 
 {% block body %}
-    <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div class="h-[calc(100vh-100px)] flex flex-col justify-center items-center bg-gray-100">
         <div class="text-center">
             <h1 class="text-6xl font-bold text-gray-800">404</h1>
             <p class="text-2xl text-gray-600 mt-4">Oops, Cette page n'existe pas !</p>
             {% if message is defined %}
-                <p class="text-gray-500 mt-2">{{ message }}</p>
+                <p class="text-gray-500 mt-2 font-bold">{{ message }}</p>
             {% else %}
-                <p class="text-gray-500 mt-2">Le lien pourrait être corrompu, ou la page a été supprimée.</p>
+                <p class="text-gray-500 mt-2 font-bold">Le lien pourrait être corrompu, ou la page a été supprimée.</p>
             {% endif %}
-            <a href="{{ path('index') }}" class="mt-6 inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">
+            <a href="{{ path('index') }}" class="mt-6 inline-block bg-blue-500 py-2 px-4 rounded hover:bg-blue-700">
                 Retour à l'accueil
             </a>
         </div>

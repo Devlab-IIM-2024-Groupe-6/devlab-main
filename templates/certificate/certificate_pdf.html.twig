@@ -21,25 +21,25 @@
             <p><strong>Numéro de suivi:</strong> {{ trackingNumber }}</p>
 
             {% if deviceMaintenance %}
-                {# <p><strong>État de la Maintenance:</strong> Étape actuelle: {{ deviceMaintenance.currentStep }}</p> #}
+                <h3>Étape actuelle: {{ currentStep.name }}</h3> 
                 <h3>Points de contrôle:</h3>
                 <ul>
-                    <li>Écran: {{ deviceMaintenance.screen ? 'OK' : 'NO VALID' }}</li>
-                    <li>État d'oxydation: {{ deviceMaintenance.oxidationStatus ? 'OK' : 'NO VALID' }}</li>
-                    <li>Charnières: {{ deviceMaintenance.hinges ? 'OK' : 'NO VALID' }}</li>
-                    <li>Ventilateur: {{ deviceMaintenance.fan ? 'OK' : 'NO VALID' }}</li>
-                    <li>Boutons: {{ deviceMaintenance.button ? 'OK' : 'NO VALID' }}</li>
-                    <li>Capteurs: {{ deviceMaintenance.sensors ? 'OK' : 'NO VALID' }}</li>
-                    <li>Châssis: {{ deviceMaintenance.chassis ? 'OK' : 'NO VALID' }}</li>
-                    <li>Effacement des données: {{ deviceMaintenance.dataWipe ? 'OK' : 'NO VALID' }}</li>
-                    <li>Déverrouillage: {{ deviceMaintenance.computerUnlock ? 'OK' : 'NO VALID' }}</li>
-                    <li>Pilotes: {{ deviceMaintenance.driver ? 'OK' : 'NO VALID' }}</li>
-                    <li>Mise à jour: {{ deviceMaintenance.computerUpdate ? 'OK' : 'NO VALID' }}</li>
-                    <li>Carte mère: {{ deviceMaintenance.motherboard ? 'OK' : 'NO VALID' }}</li>
-                    <li>Réseaux: {{ deviceMaintenance.networks ? 'OK' : 'NO VALID' }}</li>
-                    <li>Composants: {{ deviceMaintenance.components ? 'OK' : 'NO VALID' }}</li>
-                    <li>Batterie: {{ deviceMaintenance.battery ? 'OK' : 'NO VALID' }}</li>
-                    <li>Alimentation: {{ deviceMaintenance.powerSupply ? 'OK' : 'NO VALID' }}</li>
+                    <li>Écran: {{ deviceMaintenance.screen ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>État d'oxydation: {{ deviceMaintenance.oxidationStatus ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Charnières: {{ deviceMaintenance.hinges ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Ventilateur: {{ deviceMaintenance.fan ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Boutons: {{ deviceMaintenance.button ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Capteurs: {{ deviceMaintenance.sensors ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Châssis: {{ deviceMaintenance.chassis ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Effacement des données: {{ deviceMaintenance.dataWipe ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Déverrouillage: {{ deviceMaintenance.computerUnlock ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Pilotes: {{ deviceMaintenance.driver ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Mise à jour: {{ deviceMaintenance.computerUpdate ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Carte mère: {{ deviceMaintenance.motherboard ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Réseaux: {{ deviceMaintenance.networks ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Composants: {{ deviceMaintenance.components ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Batterie: {{ deviceMaintenance.battery ? 'OK' : 'Maintenance nécessaire' }}</li>
+                    <li>Alimentation: {{ deviceMaintenance.powerSupply ? 'OK' : 'Maintenance nécessaire' }}</li>
                 </ul>
             {% else %}
                 <p>La maintenance a été validée avec succès.</p>

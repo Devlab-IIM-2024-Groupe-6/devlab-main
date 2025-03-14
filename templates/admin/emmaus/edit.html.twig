@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier la Maintenance
-{% endblock %}
+{% block nav %}  {% endblock %}
+
+{% block title %} Modifier la Maintenance {% endblock %}
 
 {% block body %}
-	<div class="container mx-auto p-6 max-w-2xl">
+	<div class="container mx-auto p-6 max-w-2xl min-h-[calc(100vh)] mt-[-100px]">
 		<div class="card bg-base-100 shadow-xl">
 			<div class="card-body">
 				<h2 class="card-title text-3xl text-center font-bold mb-4">
@@ -49,13 +50,12 @@
 				<!-- Ligne de séparation -->
 
 				<div class="flex gap-4 mt-6">
-					<a href="{{ path('depot_admin_index') }}" class="btn btn-outline btn-wide flex-1">
+					<a href="{{ path('admin_emmaus') }}" class="btn btn-outline btn-wide flex-1">
 						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewbox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l-5-5m0 0l5-5m-5 5h14"/>
 						</svg>
 						Retour
 					</a>
-                    {# {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary btn-wide flex-1'}}) }} #}
                     <button type="submit" class="btn btn-primary btn-wide flex-1">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -69,3 +69,5 @@
 		</div>
 	</div>
 {% endblock %}
+
+{% block footer %} {% endblock %}

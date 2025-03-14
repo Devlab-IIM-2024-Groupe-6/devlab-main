@@ -10,35 +10,102 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Entity\Client;
 use App\Entity\DeviceMaintenance;
 use App\Service\Client\ClientService;
 use App\Service\DeviceMaintenance\DeviceMaintenanceWorkflowService;
 
 class DepotController extends AbstractController
 {
-    #[Route('/depot/{id}', name: 'depot_form')]
-    public function depot(Request $request, int $id, EntityManagerInterface $entityManager, ClientService $clientService, DeviceMaintenanceWorkflowService $DMWfS): Response
+    #[Route('/depot', name: 'depot_form_default')]
+    public function depotDefault(Request $request, EntityManagerInterface $entityManager, ClientService $clientService, DeviceMaintenanceWorkflowService $DMWfS): Response
     {
-        $deposit = $entityManager->getRepository(Deposit::class)->find($id);
+        $deposits = $entityManager->getRepository(Deposit::class)->findAll();
 
-        if (!$deposit) {
+        if (empty($deposits)) {
             return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
-                'message' => "Localisation non trouvée"
+                'message' => "Aucun dépôt trouvé"
             ], new Response('', 404));
         }
+
+        $defaultDeposit = $deposits[0];
 
         $form = $this->createForm(DepotType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            // Créer un objet DeviceMaintenance
             $deviceMaintenance = new DeviceMaintenance();
 
-            // Assigner les autres données du formulaire à DeviceMaintenance
-            // $deviceMaintenance->setCurrentStep($data['currentStep'] ?? 0);
-            // dd($data);
+            $selectedDepositId = $data['location'] ?? $defaultDeposit->getId();
+            $selectedDeposit = $entityManager->getRepository(Deposit::class)->find($selectedDepositId);
+
+            if (!$selectedDeposit) {
+                throw $this->createNotFoundException('Dépôt non trouvé');
+            }
+
+            $deviceMaintenance->setDeposit($selectedDeposit);
+            $deviceMaintenance->setScreen($data['screen'] ?? 0);
+            $deviceMaintenance->setOxidationStatus($data['oxidationStatus'] ?? 0);
+            $deviceMaintenance->setHinges($data['hinges'] ?? 0);
+            $deviceMaintenance->setFan($data['fan'] ?? 0);
+            $deviceMaintenance->setButton($data['button'] ?? 0);
+            $deviceMaintenance->setSensors($data['sensors'] ?? 0);
+            $deviceMaintenance->setChassis($data['chassis'] ?? 0);
+            $deviceMaintenance->setDataWipe($data['dataWipe'] ?? 0);
+            $deviceMaintenance->setComputerUnlock($data['computerUnlock'] ?? 0);
+            $deviceMaintenance->setDriver($data['driver'] ?? 0);
+            $deviceMaintenance->setComputerUpdate($data['computerUpdate'] ?? 0);
+            $deviceMaintenance->setMotherboard($data['motherboard'] ?? 0);
+            $deviceMaintenance->setNetworks($data['networks'] ?? 0);
+            $deviceMaintenance->setComponents($data['components'] ?? 0);
+            $deviceMaintenance->setBattery($data['battery'] ?? 0);
+            $deviceMaintenance->setPowerSupply($data['powerSupply'] ?? 0);
+
+            $client = $clientService->getOrCreateClient(
+                $data['email'],
+                $data['first_name'],
+                $data['last_name']
+            );
+            $client->addDeviceMaintenance($deviceMaintenance);
+            $DMWfS->createInitialLog($deviceMaintenance);
+
+            $entityManager->persist($client);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre formulaire a été soumis avec succès !');
+            return $this->redirectToRoute('depot_form_default');
+        }
+
+        return $this->render('depot/form.html.twig', [
+            'form' => $form->createView(),
+            'deposits' => $deposits,
+            'locationName' => $defaultDeposit->getName(),
+            'id' => $defaultDeposit->getId(),
+            'isDefaultRoute' => true,
+        ]);
+    }
+
+    #[Route('/depot/{id}', name: 'depot_form', requirements: ['id' => '\d+'])]
+    public function depot(Request $request, int $id, EntityManagerInterface $entityManager, ClientService $clientService, DeviceMaintenanceWorkflowService $DMWfS): Response
+    {
+        $deposit = $entityManager->getRepository(Deposit::class)->find($id);
+
+        if (!$deposit) {
+            return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
+                'message' => "Aucun dépôt trouvé"
+            ], new Response('', 404));
+        }
+
+        $form = $this->createForm(DepotType::class, null, [
+            'hide_location' => true,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $deviceMaintenance = new DeviceMaintenance();
+
             $deviceMaintenance->setDeposit($deposit);
             $deviceMaintenance->setScreen($data['screen'] ?? 0);
             $deviceMaintenance->setOxidationStatus($data['oxidationStatus'] ?? 0);
@@ -63,16 +130,20 @@ class DepotController extends AbstractController
                 $data['last_name']
             );
             $client->addDeviceMaintenance($deviceMaintenance);
-            $log = $DMWfS->createInitialLog($deviceMaintenance);
-            // dd($client,$deviceMaintenance);
+            $DMWfS->createInitialLog($deviceMaintenance);
+
             $entityManager->persist($client);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Votre formulaire a été soumis avec succès !');
+            return $this->redirectToRoute('depot_form', ['id' => $id]);
         }
 
         return $this->render('depot/form.html.twig', [
             'form' => $form->createView(),
             'locationName' => $deposit->getName(),
             'id' => $id,
+            'isDefaultRoute' => false,
         ]);
     }
 

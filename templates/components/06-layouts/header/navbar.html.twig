@@ -4,7 +4,7 @@
         <!-- Dropdown for mobile -->
 
         <!-- Brand -->
-        <a href="{{ path('index') }}" class=""><img class="w-[150px] lg:w-[250px]" src="images/logohds.png"></img></a>
+        <a href="{{ path('index') }}" class=""><img class="w-[150px] lg:w-[250px]" src="{{ asset('asset/logohds.png') }}"></img></a>
         <div class="dropdown">
             <button tabindex="0" class="btn btn-ghost lg:hidden">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewbox="0 0 24 24" stroke="currentColor">
@@ -19,7 +19,10 @@
                     <a href="{{ path('wiki') }}">Wiki</a>
                 </li>
                 <li>
-                    <a href="{{ path('depot_form', { id: last_depot_id() }) }}">Déposer un matériel</a>
+                    <a href="{{ path('depot_form_default') }}">Déposer mon appareil</a>
+                </li>
+                <li>
+                    <a href="{{ path('tracking') }}" class="nav-link">Suivi</a>
                 </li>
             </ul>
         </div>
@@ -29,17 +32,14 @@
     <div class="navbar-center hidden lg:flex">
         <ul class="links-list flex items-center gap-8 px-1 text-darkblue">
 			<li>
-                <a href="{{ path('depot_form', { id: last_depot_id() }) }}" class="nav-link">Donner mon appareil</a>
+                <a href="{{ path('depot_form_default') }}" class="nav-link">Déposer mon appareil</a>
             </li>
             <li>
                 <a href="{{ path('wiki') }}" class="nav-link">Résolution de problèmes</a>
             </li>
             <li>
-                <a href="{{ path('tracking') }}" class="nav-link">Suivis</a>
+                <a href="{{ path('tracking') }}" class="nav-link">Suivi</a>
             </li>
-			<li>
-				<a href="{{ path('depot_form', { id: last_depot_id() }) }}" class="nav-link">Dépôts</a>
-			</li>
         </ul>
     </div>
 </div>

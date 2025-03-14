@@ -2,14 +2,14 @@
     
     <nav>
         <div class="flex">
-            <a href="{{ path('index') }}" class=""><img class="w-[150px] lg:w-[250px]" src="images/logo-white.png"></a>
+            <a href="{{ path('index') }}" class=""><img class="w-[150px] lg:w-[250px]" src="{{ asset('asset/logo-white.png') }}"></a>
             <div class="">
                 {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('admin') }}" class="link link-hover">Espace Admin</a>
                 {% elseif is_granted('ROLE_ADMIN_POINT_DEPOT') %}
-                    <a href="{{ path('depot_admin_index') }}" class="link link-hover">Espace Admin - Point Dépôt</a>
+                    <a href="{{ path('admin_depot') }}" class="link link-hover">Espace Admin - Point Dépôt</a>
                 {% elseif is_granted('ROLE_ADMIN_EMMAUS') %}
-                    <a href="{{ path('admin_emmaus_maintenance') }}" class="link link-hover">Espace Admin - Emmaüs</a>
+                    <a href="{{ path('admin_emmaus') }}" class="link link-hover">Espace Admin - Emmaüs</a>
                 {% endif %}
             </div>
         </div>

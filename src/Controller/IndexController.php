@@ -3,7 +3,6 @@
 // src/Controller/IndexController.php
 namespace App\Controller;
 
-use App\Entity\Client;
 use App\Entity\DeviceMaintenance;
 use App\Form\TrackingFormType;
 use App\Service\BarcodeGeneratorService;
@@ -51,9 +50,11 @@ class IndexController extends AbstractController
         $result = $trackingNumber ? $trackingService->getTrackingResult($trackingNumber) : null;
 
         if ($trackingNumber && !$result) {
-            throw $this->createNotFoundException("Client ou utilisateur introuvable.");
+            return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
+                'message' => 'Client ou utilisateur introuvable.'
+            ], new Response('', 404));
         }
-    
+
         return $this->render('tracking.html.twig', [
             'form' => $form->createView(),
             'result' => $result,
@@ -74,12 +75,13 @@ class IndexController extends AbstractController
     public function generateClientBarcode(string $trackingNumber, EntityManagerInterface $entityManager): Response
     {
         $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $trackingNumber]);
-        $client = $deviceMaintenance->getClient();
-        if (!$client) {
+        if (!$deviceMaintenance) {
             return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
-                'message' => 'Client introuvable'
+                'message' => 'Numéro de tracking introuvable'
             ], new Response('', 404));
         }
+
+        $client = $deviceMaintenance->getClient();
 
         if (!$trackingNumber) {
             return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
@@ -103,36 +105,35 @@ class IndexController extends AbstractController
     public function generateCertificate(string $trackingNumber, EntityManagerInterface $entityManager): Response
     {
         $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $trackingNumber]);
-        $client = $deviceMaintenance->getClient();
-
-        if (!$client) {
+        if (!$deviceMaintenance) {
             return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
                 'message' => 'Client introuvable'
             ], new Response('', 404));
         }
-
-        // $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $client]);
+        
+        $client = $deviceMaintenance->getClient();
+        $latestMaintenanceLog = $deviceMaintenance->getLatestMaintenanceLog();
+        $currentStep = $latestMaintenanceLog ? $latestMaintenanceLog->getCurrentStep() : null;
 
         return $this->render('certificate/certificate.html.twig', [
             'client' => $client,
             'deviceMaintenance' => $deviceMaintenance,
             'trackingNumber' => $trackingNumber,
+            'currentStep' => $currentStep,
         ]);
     }
 
     #[Route('/download/{type}/{trackingNumber}', name: 'download_pdf')]
     public function downloadPdf(string $type, string $trackingNumber, EntityManagerInterface $entityManager): Response
     {
-        // /download/barcode/6C8C024B-5B68-4801-9DE1-5438C23A8E49
-        // $client = $entityManager->getRepository(Client::class)->findOneBy(['trackingNumber' => $trackingNumber]);
         $deviceMaintenance = $entityManager->getRepository(DeviceMaintenance::class)->findOneBy(['trackingNumber' => $trackingNumber]);
-        $client = $deviceMaintenance->getClient();
-
-        if (!$client) {
+        if (!$deviceMaintenance) {
             return $this->render('bundles/TwigBundle/Exception/404.html.twig', [
                 'message' => 'Client introuvable'
             ], new Response('', 404));
         }
+
+        $client = $deviceMaintenance->getClient();
 
         if ($type === 'barcode') {
             $html = $this->renderView('barcode/barcode_pdf.html.twig', [
@@ -142,11 +143,13 @@ class IndexController extends AbstractController
                 'deposit' => $deviceMaintenance->getDeposit(),
             ]);
         } elseif ($type === 'certificate') {
-
+            $latestMaintenanceLog = $deviceMaintenance->getLatestMaintenanceLog();
+            $currentStep = $latestMaintenanceLog ? $latestMaintenanceLog->getCurrentStep() : null;
             $html = $this->renderView('certificate/certificate_pdf.html.twig', [
                 'client' => $client,
                 'deviceMaintenance' => $deviceMaintenance,
                 'trackingNumber' => $trackingNumber,
+                'currentStep' => $currentStep,
             ]);
         } else {
             return $this->render('bundles/TwigBundle/Exception/404.html.twig', [

@@ -2,6 +2,8 @@
 
 namespace App\Form;
 
+use App\Entity\Deposit;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -9,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DepotType extends AbstractType
 {
@@ -26,7 +29,17 @@ class DepotType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'attr' => ['placeholder' => 'Ex : jean.dupont@email.com']
-            ])
+            ]);
+        if (!$options['hide_location']) {
+            $builder->add('location', EntityType::class, [
+                'label' => 'Localisation',
+                'class' => Deposit::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Sélectionnez une localisation',
+                'required' => true,
+            ]);
+        }
+        $builder
             ->add('screen', CheckboxType::class, [
                 'label' => 'Écran',
                 'required' => false
@@ -95,5 +108,12 @@ class DepotType extends AbstractType
                 'label' => 'Soumettre',
                 'attr' => ['class' => 'btn btn-success']
             ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'hide_location' => false,
+        ]);
     }
 }

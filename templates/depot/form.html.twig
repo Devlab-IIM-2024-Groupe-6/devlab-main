@@ -46,7 +46,11 @@
 
 			<div class="form-control mb-4">
 				<label for="location" class="label-text font-semibold">Localisation</label>
-				<input type="text" id="location" class="input input-bordered w-full" value="{{ locationName }}">
+				{% if isDefaultRoute %}
+					{{ form_widget(form.location, {'attr': {'class': 'select select-bordered w-full'}}) }}
+				{% else %}
+					<input type="text" id="location" class="input input-bordered w-full" value="{{ locationName }}" readonly>
+				{% endif %}
 			</div>
 
 			<div class="mt-6">
